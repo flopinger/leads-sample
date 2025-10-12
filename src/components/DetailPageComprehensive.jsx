@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import auteonLogo from '../assets/auteon-logo.jpg';
+import { filterEmails, filterEmailsFromArray, shouldFilterEmail } from '../utils/emailFilter';
 import { 
   MapPin, 
   Phone, 
@@ -115,12 +116,17 @@ const DetailPageComprehensive = () => {
     callout: "bg-green-100 text-green-800 border-green-300"
   };
 
-  // Clean data for export - rename NORTHDATA to HANDELSREGISTER and filter *northdata* fields
+  // Clean data for export - rename NORTHDATA to HANDELSREGISTER, filter *northdata* fields, and filter emails
   const cleanDataForExport = (data) => {
     if (!data) return data;
     
     // Deep clone to avoid mutating original data
     const cleanedData = JSON.parse(JSON.stringify(data));
+    
+    // Filter emails from main email array
+    if (cleanedData.email && Array.isArray(cleanedData.email)) {
+      cleanedData.email = filterEmails(cleanedData.email);
+    }
     
     // Process relationships array
     if (cleanedData.relationships && Array.isArray(cleanedData.relationships)) {
@@ -130,7 +136,7 @@ const DetailPageComprehensive = () => {
           rel.handle = 'HANDELSREGISTER';
         }
         
-        // Filter out fields containing *northdata* values
+        // Filter out fields containing *northdata* values and filter emails
         if (rel.source_data) {
           try {
             const sourceData = typeof rel.source_data === 'string' 
@@ -145,6 +151,14 @@ const DetailPageComprehensive = () => {
                 return; // Skip this field
               }
               cleanedSourceData[key] = value;
+            });
+            
+            // Filter emails from source_data
+            const emailFields = ['email', 'email_1', 'email_2', 'email_3'];
+            emailFields.forEach(field => {
+              if (cleanedSourceData[field]) {
+                delete cleanedSourceData[field];
+              }
             });
             
             rel.source_data = JSON.stringify(cleanedSourceData);
@@ -358,13 +372,16 @@ const DetailPageComprehensive = () => {
     // Main email array
     const mainEmails = safeGet(workshop, 'email');
     if (Array.isArray(mainEmails)) {
-      mainEmails.forEach(email => {
+      const filteredEmails = filterEmails(mainEmails);
+      filteredEmails.forEach(email => {
         if (email && typeof email === 'string') {
           emails.add(email);
         }
       });
     } else if (mainEmails && typeof mainEmails === 'string') {
-      emails.add(mainEmails);
+      if (!shouldFilterEmail(mainEmails)) {
+        emails.add(mainEmails);
+      }
     }
     
     // From Google Business data
@@ -372,7 +389,7 @@ const DetailPageComprehensive = () => {
       safeGet(googleData, 'email_1'),
       safeGet(googleData, 'email_2'),
       safeGet(googleData, 'email_3')
-    ].filter(email => email && typeof email === 'string');
+    ].filter(email => email && typeof email === 'string' && !shouldFilterEmail(email));
     
     googleEmails.forEach(email => emails.add(email));
     
@@ -385,8 +402,8 @@ const DetailPageComprehensive = () => {
           const email = safeGet(data, 'email');
           const emailAlt = safeGet(data, 'E-Mail');
           
-          if (email && typeof email === 'string') emails.add(email);
-          if (emailAlt && typeof emailAlt === 'string') emails.add(emailAlt);
+          if (email && typeof email === 'string' && !shouldFilterEmail(email)) emails.add(email);
+          if (emailAlt && typeof emailAlt === 'string' && !shouldFilterEmail(emailAlt)) emails.add(emailAlt);
         } catch (e) {
           // Ignore parsing errors
         }

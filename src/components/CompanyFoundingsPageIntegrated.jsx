@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { filterEmails, filterEmailsFromArray } from '../utils/emailFilter';
 
 const CompanyFoundingsPageIntegrated = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -119,12 +120,17 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
     callout: "bg-green-100 text-green-800 border-green-300"
   };
 
-  // Clean data for export - rename NORTHDATA to HANDELSREGISTER and filter *northdata* fields
+  // Clean data for export - rename NORTHDATA to HANDELSREGISTER, filter *northdata* fields, and filter emails
   const cleanDataForExport = (data) => {
     if (!data) return data;
     
     // Deep clone to avoid mutating original data
     const cleanedData = JSON.parse(JSON.stringify(data));
+    
+    // Filter emails from main email array
+    if (cleanedData.email && Array.isArray(cleanedData.email)) {
+      cleanedData.email = filterEmails(cleanedData.email);
+    }
     
     // Process relationships array
     if (cleanedData.relationships && Array.isArray(cleanedData.relationships)) {
@@ -134,7 +140,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
           rel.handle = 'HANDELSREGISTER';
         }
         
-        // Filter out fields containing *northdata* values
+        // Filter out fields containing *northdata* values and filter emails
         if (rel.source_data) {
           try {
             const sourceData = typeof rel.source_data === 'string' 
@@ -149,6 +155,14 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                 return; // Skip this field
               }
               cleanedSourceData[key] = value;
+            });
+            
+            // Filter emails from source_data
+            const emailFields = ['email', 'email_1', 'email_2', 'email_3'];
+            emailFields.forEach(field => {
+              if (cleanedSourceData[field]) {
+                delete cleanedSourceData[field];
+              }
             });
             
             rel.source_data = JSON.stringify(cleanedSourceData);

@@ -8,6 +8,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Search, Filter, X, Users, Phone, Mail, Globe, Download, MapPin, Building, Calendar, TrendingUp } from 'lucide-react';
 import auteonLogo from '../assets/auteon-logo.jpg';
 import GoogleMapComponent from './GoogleMapComponent';
+import { filterEmails, filterEmailsFromArray } from '../utils/emailFilter';
 
 const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
@@ -98,7 +99,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
   const totalWorkshops = data.length;
   const uniqueCities = new Set(filteredData.map(item => item.city)).size;
   const totalWithPhone = filteredData.filter(item => item.telephone).length;
-  const totalWithEmail = filteredData.filter(item => item.email && item.email.length > 0).length;
+  const totalWithEmail = filteredData.filter(item => item.email && filterEmails(item.email).length > 0).length;
   const totalWithWebsite = filteredData.filter(item => item.website_url).length;
   const totalWithEvents = filteredData.filter(item => item.events && item.events.length > 0).length;
 
@@ -139,12 +140,17 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
     setFilters({ city: '', zipCode: '', concept: '' });
   };
 
-  // Clean data for export - rename NORTHDATA to HANDELSREGISTER and filter *northdata* fields
+  // Clean data for export - rename NORTHDATA to HANDELSREGISTER, filter *northdata* fields, and filter emails
   const cleanDataForExport = (data) => {
     if (!data) return data;
     
     // Deep clone to avoid mutating original data
     const cleanedData = JSON.parse(JSON.stringify(data));
+    
+    // Filter emails from main email array
+    if (cleanedData.email && Array.isArray(cleanedData.email)) {
+      cleanedData.email = filterEmails(cleanedData.email);
+    }
     
     // Process relationships array
     if (cleanedData.relationships && Array.isArray(cleanedData.relationships)) {
@@ -154,7 +160,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
           rel.handle = 'HANDELSREGISTER';
         }
         
-        // Filter out fields containing *northdata* values
+        // Filter out fields containing *northdata* values and filter emails
         if (rel.source_data) {
           try {
             const sourceData = typeof rel.source_data === 'string' 
@@ -169,6 +175,14 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                 return; // Skip this field
               }
               cleanedSourceData[key] = value;
+            });
+            
+            // Filter emails from source_data
+            const emailFields = ['email', 'email_1', 'email_2', 'email_3'];
+            emailFields.forEach(field => {
+              if (cleanedSourceData[field]) {
+                delete cleanedSourceData[field];
+              }
             });
             
             rel.source_data = JSON.stringify(cleanedSourceData);
@@ -614,12 +628,15 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                                   </div>
                                 )}
                                 
-                                {item.email && item.email.length > 0 && (
-                                  <div className="flex items-center text-gray-600">
-                                    <Mail className="mr-2 h-4 w-4 text-[#005787]" />
-                                    <span className="text-sm">{item.email[0]}</span>
-                                  </div>
-                                )}
+                                {item.email && item.email.length > 0 && (() => {
+                                  const filteredEmails = filterEmails(item.email);
+                                  return filteredEmails.length > 0 && (
+                                    <div className="flex items-center text-gray-600">
+                                      <Mail className="mr-2 h-4 w-4 text-[#005787]" />
+                                      <span className="text-sm">{filteredEmails[0]}</span>
+                                    </div>
+                                  );
+                                })()}
                                 
                                 {item.website_url && (
                                   <div className="flex items-center text-gray-600">
