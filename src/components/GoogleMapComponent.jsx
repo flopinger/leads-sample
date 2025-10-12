@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import carRepairIcon from '../assets/car-repair-mechanic-icon.svg';
 
 const GoogleMapComponent = ({ workshops = [], selectedWorkshop = null }) => {
@@ -8,6 +9,7 @@ const GoogleMapComponent = ({ workshops = [], selectedWorkshop = null }) => {
   const [markerClusterer, setMarkerClusterer] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Function to extract coordinates from workshop data
   const getCoordinates = (workshop) => {
@@ -182,9 +184,9 @@ const GoogleMapComponent = ({ workshops = [], selectedWorkshop = null }) => {
               ` : ''}
             </div>
             <div style="margin-top: 12px;">
-              <a href="/detail/${workshop.id}" style="display: inline-block; background-color: #005787; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500; transition: background-color 0.2s;">
+              <button id="detail-btn-${workshop.id}" style="display: inline-block; background-color: #005787; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500; transition: background-color 0.2s; border: none; cursor: pointer;">
                 Details anzeigen →
-              </a>
+              </button>
             </div>
           </div>
         `
@@ -192,6 +194,18 @@ const GoogleMapComponent = ({ workshops = [], selectedWorkshop = null }) => {
 
       marker.addListener('click', () => {
         infoWindow.open(map, marker);
+        
+        // Add event listener for the detail link after the info window opens
+        setTimeout(() => {
+          const detailButton = document.getElementById(`detail-btn-${workshop.id}`);
+          if (detailButton && !detailButton.hasAttribute('data-listener-added')) {
+            detailButton.setAttribute('data-listener-added', 'true');
+            detailButton.addEventListener('click', (e) => {
+              e.preventDefault();
+              navigate(`/detail/${workshop.id}`);
+            });
+          }
+        }, 100);
       });
 
       newMarkers.push(marker);
