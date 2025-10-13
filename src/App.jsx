@@ -38,8 +38,23 @@ function App() {
       item.updated_at,
       ...(item.events || []).map(e => e.updated_at)
     ]).filter(Boolean);
-    const latest = dates.sort((a,b) => new Date(b) - new Date(a))[0];
-    return latest ? new Date(latest) : null;
+    
+    if (dates.length === 0) return null;
+    
+    // Sort dates safely, handling invalid dates
+    const validDates = dates
+      .map(dateStr => {
+        try {
+          const date = new Date(dateStr);
+          return isNaN(date.getTime()) ? null : { date, original: dateStr };
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.date - a.date);
+    
+    return validDates.length > 0 ? validDates[0].date : null;
   }, []);
 
   useEffect(() => {
