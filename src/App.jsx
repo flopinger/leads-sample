@@ -34,28 +34,42 @@ function App() {
 
   // Compute latest updated_at date across data
   const latestUpdatedAt = useMemo(() => {
+    console.log('Safari debug - werkstattDataRaw length:', werkstattDataRaw?.length);
+    
     const dates = (werkstattDataRaw || []).flatMap(item => {
       const itemDates = [];
       
       // Main item updated_at
-      if (item.updated_at) itemDates.push(item.updated_at);
+      if (item.updated_at) {
+        console.log('Safari debug - found item.updated_at:', item.updated_at);
+        itemDates.push(item.updated_at);
+      }
       
       // Relationships updated_at
       if (item.relationships && Array.isArray(item.relationships)) {
         item.relationships.forEach(rel => {
-          if (rel.updated_at) itemDates.push(rel.updated_at);
+          if (rel.updated_at) {
+            console.log('Safari debug - found relationship.updated_at:', rel.updated_at);
+            itemDates.push(rel.updated_at);
+          }
         });
       }
       
       // Events updated_at (fallback for other data structures)
       if (item.events && Array.isArray(item.events)) {
         item.events.forEach(event => {
-          if (event.updated_at) itemDates.push(event.updated_at);
+          if (event.updated_at) {
+            console.log('Safari debug - found event.updated_at:', event.updated_at);
+            itemDates.push(event.updated_at);
+          }
         });
       }
       
       return itemDates;
     }).filter(Boolean);
+    
+    console.log('Safari debug - total dates found:', dates.length);
+    console.log('Safari debug - first few dates:', dates.slice(0, 3));
     
     if (dates.length === 0) return null;
     
@@ -71,6 +85,11 @@ function App() {
       })
       .filter(Boolean)
       .sort((a, b) => b.date - a.date);
+    
+    console.log('Safari debug - valid dates count:', validDates.length);
+    if (validDates.length > 0) {
+      console.log('Safari debug - latest date:', validDates[0].date);
+    }
     
     return validDates.length > 0 ? validDates[0].date : null;
   }, []);
