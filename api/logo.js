@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+export const config = { runtime: 'nodejs' };
 import { getCookie, verifyJwt, getTenantMap, resolveAsset } from './_utils.js';
 import fs from 'fs';
 

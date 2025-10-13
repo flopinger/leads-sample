@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+export const config = { runtime: 'nodejs' };
 import { getTenantMap, signJwt, setCookie } from './_utils.js';
 
 export default async function handler(req, res) {
