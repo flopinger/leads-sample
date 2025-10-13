@@ -82,6 +82,10 @@ function App() {
         let formatted;
         try {
           formatted = latestUpdatedAt.toLocaleDateString('de-DE');
+          // Safari sometimes returns numbers instead of strings, convert to string
+          if (typeof formatted === 'number') {
+            formatted = formatted.toString();
+          }
         } catch {
           // Fallback for Safari
           const day = latestUpdatedAt.getDate().toString().padStart(2, '0');
