@@ -70,6 +70,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "nodemailer": "^6.9.10",
+    "jsonwebtoken": "^9.0.2",
     "@supabase/supabase-js": "^2.45.6"
   },
   "devDependencies": {
