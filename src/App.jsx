@@ -34,10 +34,28 @@ function App() {
 
   // Compute latest updated_at date across data
   const latestUpdatedAt = useMemo(() => {
-    const dates = (werkstattDataRaw || []).flatMap(item => [
-      item.updated_at,
-      ...(item.events || []).map(e => e.updated_at)
-    ]).filter(Boolean);
+    const dates = (werkstattDataRaw || []).flatMap(item => {
+      const itemDates = [];
+      
+      // Main item updated_at
+      if (item.updated_at) itemDates.push(item.updated_at);
+      
+      // Relationships updated_at
+      if (item.relationships && Array.isArray(item.relationships)) {
+        item.relationships.forEach(rel => {
+          if (rel.updated_at) itemDates.push(rel.updated_at);
+        });
+      }
+      
+      // Events updated_at (fallback for other data structures)
+      if (item.events && Array.isArray(item.events)) {
+        item.events.forEach(event => {
+          if (event.updated_at) itemDates.push(event.updated_at);
+        });
+      }
+      
+      return itemDates;
+    }).filter(Boolean);
     
     if (dates.length === 0) return null;
     
