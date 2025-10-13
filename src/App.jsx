@@ -78,32 +78,22 @@ function App() {
   useEffect(() => {
     if (latestUpdatedAt && typeof window !== 'undefined') {
       try {
-        // Try different formatting approaches for Safari compatibility
-        let formatted;
-        try {
-          formatted = latestUpdatedAt.toLocaleDateString('de-DE');
-          // Safari sometimes returns numbers instead of strings, convert to string
-          if (typeof formatted === 'number') {
-            formatted = formatted.toString();
-          }
-        } catch {
-          // Fallback for Safari
-          const day = latestUpdatedAt.getDate().toString().padStart(2, '0');
-          const month = (latestUpdatedAt.getMonth() + 1).toString().padStart(2, '0');
-          const year = latestUpdatedAt.getFullYear();
-          formatted = `${day}.${month}.${year}`;
-        }
+        // Force manual formatting for Safari compatibility
+        const day = latestUpdatedAt.getDate().toString().padStart(2, '0');
+        const month = (latestUpdatedAt.getMonth() + 1).toString().padStart(2, '0');
+        const year = latestUpdatedAt.getFullYear();
+        const formatted = `${day}.${month}.${year}`;
         
-        // Ensure we have a valid formatted date
-        if (!formatted || formatted === 'Invalid Date') {
-          formatted = 'Unbekannt';
-        }
+        console.log('Safari debug - latestUpdatedAt:', latestUpdatedAt);
+        console.log('Safari debug - formatted:', formatted);
         
         window.__LATEST_UPDATED_AT__ = formatted;
       } catch (error) {
-        console.warn('Date formatting error:', error);
+        console.warn('Safari date formatting error:', error);
         window.__LATEST_UPDATED_AT__ = 'Unbekannt';
       }
+    } else {
+      console.log('Safari debug - latestUpdatedAt is null or window undefined');
     }
     if (tenantName && typeof window !== 'undefined') {
       window.__TENANT_NAME__ = tenantName;
