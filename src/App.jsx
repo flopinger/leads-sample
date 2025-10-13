@@ -65,6 +65,13 @@ function App() {
         if (data && data.user) {
           setIsAuthenticated(true);
           setTenantName(data.tenantName || '');
+          // Initialize GA4 user properties and user_id early in the session
+          try {
+            if (window.gtag) {
+              window.gtag('set', 'user_properties', { tenant: data.tenantName || data.user });
+              window.gtag('set', { user_id: data.user });
+            }
+          } catch {}
         }
       })
       .catch(() => {});
