@@ -77,8 +77,29 @@ function App() {
 
   useEffect(() => {
     if (latestUpdatedAt && typeof window !== 'undefined') {
-      const formatted = latestUpdatedAt.toLocaleDateString('de-DE');
-      window.__LATEST_UPDATED_AT__ = formatted;
+      try {
+        // Try different formatting approaches for Safari compatibility
+        let formatted;
+        try {
+          formatted = latestUpdatedAt.toLocaleDateString('de-DE');
+        } catch {
+          // Fallback for Safari
+          const day = latestUpdatedAt.getDate().toString().padStart(2, '0');
+          const month = (latestUpdatedAt.getMonth() + 1).toString().padStart(2, '0');
+          const year = latestUpdatedAt.getFullYear();
+          formatted = `${day}.${month}.${year}`;
+        }
+        
+        // Ensure we have a valid formatted date
+        if (!formatted || formatted === 'Invalid Date') {
+          formatted = 'Unbekannt';
+        }
+        
+        window.__LATEST_UPDATED_AT__ = formatted;
+      } catch (error) {
+        console.warn('Date formatting error:', error);
+        window.__LATEST_UPDATED_AT__ = 'Unbekannt';
+      }
     }
     if (tenantName && typeof window !== 'undefined') {
       window.__TENANT_NAME__ = tenantName;
