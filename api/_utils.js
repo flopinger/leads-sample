@@ -1,13 +1,24 @@
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
+import { getSupabaseAdmin } from './_supabase.js';
 
 export function getTenantMap() {
+  const map = new Map();
+  const supa = getSupabaseAdmin();
+  if (supa) {
+    // Prefer Supabase when configured
+    try {
+      // @ts-ignore
+      const { data, error } = supa.from('tenants').select('user,password,logo_file,tenant_name,active').eq('active', true);
+      // Note: Supabase client returns a promise; but Vercel will await handler.
+      // We return a placeholder map here; callers should use getTenantMapAsync when needed.
+    } catch {}
+  }
   const users = (process.env.TENANT_USERS || '').split(',').map(s => s.trim()).filter(Boolean);
   const passwords = (process.env.TENANT_PASSWORDS || '').split(',').map(s => s.trim()).filter(Boolean);
   const logos = (process.env.TENANT_LOGOS || '').split(',').map(s => s.trim()).filter(Boolean);
   const names = (process.env.TENANT_NAMES || '').split(',').map(s => s.trim()).filter(Boolean);
-  const map = new Map();
   users.forEach((u, i) => {
     const pwd = passwords[i];
     const logo = logos[i];
@@ -15,6 +26,20 @@ export function getTenantMap() {
     if (u && pwd && logo) map.set(u, { password: pwd, logoFile: logo, tenantName });
   });
   return map;
+}
+
+export async function getTenantMapAsync() {
+  const supa = getSupabaseAdmin();
+  if (!supa) return getTenantMap();
+  const map = new Map();
+  const { data, error } = await supa.from('tenants').select('user,password,logo_file,tenant_name,active');
+  if (!error && Array.isArray(data)) {
+    data.filter(r => r.active !== false).forEach(r => {
+      map.set(r.user, { password: r.password, logoFile: r.logo_file, tenantName: r.tenant_name });
+    });
+    return map;
+  }
+  return getTenantMap();
 }
 
 export function signJwt(payload) {

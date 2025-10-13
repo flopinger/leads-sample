@@ -1,10 +1,10 @@
 export const config = { runtime: 'nodejs' };
-import { getTenantMap, signJwt, setCookie } from './_utils.js';
+import { getTenantMapAsync, signJwt, setCookie } from './_utils.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
   const { user, password } = req.body || {};
-  const map = getTenantMap();
+  const map = await getTenantMapAsync();
   const entry = map.get((user || '').trim());
   if (!entry || entry.password !== password) return res.status(401).json({ ok: false, error: 'Invalid credentials' });
   const token = signJwt({ user, tenantName: entry.tenantName });
