@@ -32,10 +32,10 @@ export async function getTenantMapAsync() {
   const supa = getSupabaseAdmin();
   if (!supa) return getTenantMap();
   const map = new Map();
-  const { data, error } = await supa.from('tenants').select('user,password,logo_file,tenant_name,active');
-  if (!error && Array.isArray(data)) {
+  const { data, error } = await supa.from('tenants').select('username,password,logo_file,tenant_name,active');
+  if (!error && Array.isArray(data) && data.length > 0) {
     data.filter(r => r.active !== false).forEach(r => {
-      map.set(r.user, { password: r.password, logoFile: r.logo_file, tenantName: r.tenant_name });
+      map.set(r.username, { password: r.password, logoFile: r.logo_file, tenantName: r.tenant_name });
     });
     return map;
   }
