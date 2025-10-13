@@ -13,7 +13,9 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-ZCG0Z3F5RE');
+      // Enable debug mode automatically on localhost or with ?debug=1
+      var isDebug = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || /[?&]debug=1(&|$)/.test(location.search));
+      gtag('config', 'G-ZCG0Z3F5RE', { debug_mode: isDebug });
     </script>
     
     <!-- Google Maps API wird dynamisch in der Komponente geladen -->
