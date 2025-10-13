@@ -32,6 +32,43 @@ function App() {
     return werkstattDataRaw;
   }, []);
 
+  // Safari-compatible date parsing function
+  const parseDateSafari = (dateStr) => {
+    if (!dateStr) return null;
+    
+    try {
+      // Handle the specific format: "2025-10-09 22:22:24.486274 UTC"
+      // Safari has issues with microseconds, so we'll strip them
+      let cleanDateStr = dateStr;
+      
+      // Remove microseconds (everything after the last dot before UTC)
+      if (cleanDateStr.includes(' UTC')) {
+        cleanDateStr = cleanDateStr.replace(/\.\d+ UTC$/, ' UTC');
+      }
+      
+      // Try parsing the cleaned string
+      let date = new Date(cleanDateStr);
+      
+      // If that fails, try removing UTC suffix
+      if (isNaN(date.getTime())) {
+        cleanDateStr = cleanDateStr.replace(' UTC', '');
+        date = new Date(cleanDateStr);
+      }
+      
+      // If still fails, try ISO format conversion
+      if (isNaN(date.getTime())) {
+        // Convert "2025-10-09 22:22:24" to "2025-10-09T22:22:24Z"
+        cleanDateStr = cleanDateStr.replace(' ', 'T') + 'Z';
+        date = new Date(cleanDateStr);
+      }
+      
+      return isNaN(date.getTime()) ? null : date;
+    } catch (error) {
+      console.warn('Safari date parsing error for:', dateStr, error);
+      return null;
+    }
+  };
+
   // Compute latest updated_at date across data
   const latestUpdatedAt = useMemo(() => {
     console.log('Safari debug - werkstattDataRaw length:', werkstattDataRaw?.length);
@@ -73,15 +110,11 @@ function App() {
     
     if (dates.length === 0) return null;
     
-    // Sort dates safely, handling invalid dates
+    // Sort dates safely, handling invalid dates with Safari-compatible parsing
     const validDates = dates
       .map(dateStr => {
-        try {
-          const date = new Date(dateStr);
-          return isNaN(date.getTime()) ? null : { date, original: dateStr };
-        } catch {
-          return null;
-        }
+        const date = parseDateSafari(dateStr);
+        return date ? { date, original: dateStr } : null;
       })
       .filter(Boolean)
       .sort((a, b) => b.date - a.date);
@@ -89,6 +122,7 @@ function App() {
     console.log('Safari debug - valid dates count:', validDates.length);
     if (validDates.length > 0) {
       console.log('Safari debug - latest date:', validDates[0].date);
+      console.log('Safari debug - latest date original:', validDates[0].original);
     }
     
     return validDates.length > 0 ? validDates[0].date : null;
