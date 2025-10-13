@@ -1,20 +1,20 @@
 // Utility functions for opening hours status
 
 export const parseOpeningHours = (hoursString) => {
-  if (!hoursString || hoursString === 'Geschlossen' || hoursString === 'geschlossen') {
-    return null;
+  if (!hoursString || /geschlosse?n/i.test(hoursString)) return [];
+  // Support multiple ranges separated by comma, semicolon, or slash
+  const parts = hoursString.split(/[,;/]+/).map(s => s.trim()).filter(Boolean);
+  const ranges = [];
+  for (const part of parts) {
+    const m = part.match(/(\d{1,2}):?(\d{0,2})\s*[-–]\s*(\d{1,2}):?(\d{0,2})/);
+    if (!m) continue;
+    const [, sh, sm='00', eh, em='00'] = m;
+    ranges.push({
+      start: { hour: parseInt(sh,10), minute: parseInt(sm,10) },
+      end:   { hour: parseInt(eh,10), minute: parseInt(em,10) }
+    });
   }
-
-  // Parse time ranges like "08:00 - 18:00" or "8:00-18:00"
-  const timeMatch = hoursString.match(/(\d{1,2}):?(\d{0,2})\s*[-–]\s*(\d{1,2}):?(\d{0,2})/);
-  if (!timeMatch) return null;
-
-  const [, startHour, startMin = '00', endHour, endMin = '00'] = timeMatch;
-  
-  return {
-    start: { hour: parseInt(startHour), minute: parseInt(startMin) },
-    end: { hour: parseInt(endHour), minute: parseInt(endMin) }
-  };
+  return ranges;
 };
 
 export const getOpeningStatus = (workingHours) => {
@@ -54,47 +54,39 @@ export const getOpeningStatus = (workingHours) => {
     return { status: 'unknown', message: 'Öffnungszeiten für heute nicht verfügbar' };
   }
 
-  const parsedHours = parseOpeningHours(todayHours);
-  if (!parsedHours) {
+  const parsedRanges = parseOpeningHours(todayHours);
+  if (!parsedRanges || parsedRanges.length === 0) {
     return { status: 'closed', message: 'Heute geschlossen' };
   }
+  // Convert ranges to minutes
+  const rangesInMinutes = parsedRanges.map(r => ({
+    open: r.start.hour * 60 + r.start.minute,
+    close: r.end.hour * 60 + r.end.minute
+  })).sort((a,b) => a.open - b.open);
 
-  const openTime = parsedHours.start.hour * 60 + parsedHours.start.minute;
-  const closeTime = parsedHours.end.hour * 60 + parsedHours.end.minute;
-
-  // Check if currently open
-  if (currentTime >= openTime && currentTime < closeTime) {
-    // Check if closing soon (within 1 hour)
-    const timeUntilClose = closeTime - currentTime;
-    if (timeUntilClose <= 60) {
-      const minutesLeft = timeUntilClose;
-      return { 
-        status: 'closing-soon', 
-        message: `Schließt in ${minutesLeft} Minute${minutesLeft !== 1 ? 'n' : ''}` 
-      };
-    }
-    return { 
-      status: 'open', 
-      message: `Geöffnet bis ${parsedHours.end.hour.toString().padStart(2, '0')}:${parsedHours.end.minute.toString().padStart(2, '0')}` 
-    };
-  }
-
-  // Check if opening soon (within 1 hour)
-  if (currentTime < openTime) {
-    const timeUntilOpen = openTime - currentTime;
-    if (timeUntilOpen <= 60) {
-      const minutesLeft = timeUntilOpen;
-      return { 
-        status: 'opening-soon', 
-        message: `Öffnet in ${minutesLeft} Minute${minutesLeft !== 1 ? 'n' : ''}` 
-      };
+  // Open now?
+  for (const r of rangesInMinutes) {
+    if (currentTime >= r.open && currentTime < r.close) {
+      const timeUntilClose = r.close - currentTime;
+      if (timeUntilClose <= 60) {
+        return { status: 'closing-soon', message: `Schließt in ${timeUntilClose} Minute${timeUntilClose !== 1 ? 'n' : ''}` };
+      }
+      return { status: 'open', message: `Geöffnet bis ${String(Math.floor(r.close/60)).padStart(2,'0')}:${String(r.close%60).padStart(2,'0')}` };
     }
   }
 
-  return { 
-    status: 'closed', 
-    message: `Geschlossen - Öffnet um ${parsedHours.start.hour.toString().padStart(2, '0')}:${parsedHours.start.minute.toString().padStart(2, '0')}` 
-  };
+  // Not open now: find next opening time today (greater than current)
+  const next = rangesInMinutes.find(r => r.open > currentTime);
+  if (next) {
+    const inMinutes = next.open - currentTime;
+    if (inMinutes <= 60) {
+      return { status: 'opening-soon', message: `Öffnet in ${inMinutes} Minute${inMinutes !== 1 ? 'n' : ''}` };
+    }
+    return { status: 'closed', message: `Geschlossen - Öffnet um ${String(Math.floor(next.open/60)).padStart(2,'0')}:${String(next.open%60).padStart(2,'0')}` };
+  }
+
+  // No more openings today
+  return { status: 'closed', message: 'Heute geschlossen' };
 };
 
 export const getStatusColor = (status) => {

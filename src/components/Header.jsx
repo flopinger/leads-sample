@@ -15,7 +15,7 @@ import {
   Building,
   TrendingUp
 } from 'lucide-react';
-import zfLogo from '../assets/zf-logo.svg';
+// Dynamic, tenant-specific logo is served by backend
 import { PREMIUM_CONCEPTS } from '../utils/dataUtils';
 
 const Header = ({ 
@@ -88,8 +88,8 @@ const Header = ({
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 flex items-center justify-center">
                 <img 
-                  src={zfLogo} 
-                  alt="ZF Logo" 
+                  src={"/api/logo"}
+                  alt="Logo" 
                   className="w-full h-full brightness-0 invert"
                   style={{ filter: 'brightness(0) invert(1)' }}
                 />

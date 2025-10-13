@@ -9,9 +9,9 @@ import {
   TrendingUp,
   Calendar
 } from 'lucide-react';
-import zfLogo from '../assets/zf-logo.svg';
+// Dynamic, tenant-specific logo is served by backend
 
-const HeaderIntegrated = ({ onLogout, allData = [] }) => {
+const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
   const location = useLocation();
 
   // Calculate statistics from integrated data
@@ -26,13 +26,16 @@ const HeaderIntegrated = ({ onLogout, allData = [] }) => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="bg-[#005787] text-white shadow-lg sticky top-0 z-[60]">
+    <header className="brand-bg text-white shadow-lg sticky top-0 z-[60]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
           {/* Logo and Title */}
-          <div className="flex items-center space-x-4">
-            <img src={zfLogo} alt="ZF" className="h-8 w-auto brightness-0 invert" />
+          <div className="flex items-center space-x-3 font-semibold">
+            <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+              <img src="/api/logo" alt="Logo" className="h-8 w-auto brightness-0 invert" />
+              <span className="text-sm opacity-90">Daten-Sample für {tenantName || ' '}</span>
+            </Link>
           </div>
 
           {/* Navigation */}

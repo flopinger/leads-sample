@@ -10,7 +10,7 @@ import auteonLogo from '../assets/auteon-logo.jpg';
 import GoogleMapComponent from './GoogleMapComponent';
 import { filterEmails, filterEmailsFromArray } from '../utils/emailFilter';
 
-const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => {
+const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilters, tenantName = '' }) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
 
   // Translation function for classifications
@@ -18,9 +18,9 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
   const badgeStyles = {
     // Status badges
     status: {
-      active: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      active: "bg-blue-50 [a&]:hover:bg-[color:var(--action-500)/0.16] brand-tint-10 text-[color:var(--brand-500)] border-[color:var(--brand-500)]/20",
       inactive: "bg-red-50 text-red-700 border-red-200",
-      operational: "bg-emerald-50 text-emerald-700 border-emerald-200"
+      operational: "bg-blue-50 [a&]:hover:bg-[color:var(--action-500)/0.16] brand-tint-10 text-[color:var(--brand-500)] border-[color:var(--brand-500)]/20"
     },
     // Classification badges
     classification: "bg-slate-50 text-slate-700 border-slate-200",
@@ -243,8 +243,8 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">
-                Werkstattadressen-Sample ZF
+              <h1 className="text-2xl font-bold heading-contrast">
+                Werkstattadressen-Sample {tenantName ? <span>{tenantName}</span> : null}
               </h1>
             </div>
             {/* Stand Callout and Export */}
@@ -252,13 +252,13 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                 <Badge variant="outline" className={`${badgeStyles.callout} text-sm px-3 py-1`}>
                   <Calendar className="w-3 h-3 mr-1" />
-                  Stand: 10.10.2025
+                  <span id="stand-date">Stand: {typeof window !== 'undefined' && window.__LATEST_UPDATED_AT__ ? window.__LATEST_UPDATED_AT__ : ''}</span>
                 </Badge>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <Button 
                   onClick={exportData}
-                  className="bg-[#005787] hover:bg-[#004066] text-white"
+                  className="action-bg action-bg-hover text-white"
                   size="sm"
                 >
                   <Download className="mr-2 h-4 w-4" />
@@ -280,7 +280,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
             <Card className="border border-gray-200 shadow-md bg-white">
               <CardHeader>
                 <CardTitle className="flex items-center text-gray-900">
-                  <Search className="mr-2 h-5 w-5 text-[#005787]" />
+                  <Search className="mr-2 h-5 w-5 brand-text" />
                   Suche
                 </CardTitle>
               </CardHeader>
@@ -305,11 +305,11 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-3xl font-bold text-[#005787]">{filteredData.length}</p>
+                      <p className="text-3xl font-bold heading-contrast">{filteredData.length}</p>
                       <p className="text-sm text-gray-600 mt-1">Werkstätten</p>
                     </div>
-                    <div className="bg-[#005787]/10 p-3 rounded-lg">
-                      <Building className="h-6 w-6 text-[#005787]" />
+                    <div className="brand-tint-10 p-3 rounded-lg">
+                      <Building className="h-6 w-6 brand-text" />
                     </div>
                   </div>
                 </CardContent>
@@ -320,11 +320,11 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-3xl font-bold text-[#005787]">{uniqueCities}</p>
+                      <p className="text-3xl font-bold heading-contrast">{uniqueCities}</p>
                       <p className="text-sm text-gray-600 mt-1">Städte</p>
                     </div>
-                    <div className="bg-[#005787]/10 p-3 rounded-lg">
-                      <MapPin className="h-6 w-6 text-[#005787]" />
+                    <div className="brand-tint-10 p-3 rounded-lg">
+                      <MapPin className="h-6 w-6 brand-text" />
                     </div>
                   </div>
                 </CardContent>
@@ -335,7 +335,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="text-2xl font-bold text-[#005787]">{totalWithPhone}</p>
+                      <p className="text-2xl font-bold heading-contrast">{totalWithPhone}</p>
                       <p className="text-xs text-gray-600 mt-1">Telefonnummern</p>
                       <p className="text-xs text-gray-500 mt-1">
                         {Math.round((totalWithPhone / filteredData.length) * 100)}% Abdeckung
@@ -347,7 +347,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                           <PieChart>
                             <Pie
                               data={[
-                                { name: 'Mit Telefon', value: totalWithPhone, fill: '#005787' },
+                                { name: 'Mit Telefon', value: totalWithPhone, fill: getComputedStyle(document.documentElement).getPropertyValue('--brand-500') || '#FF6A00' },
                                 { name: 'Ohne Telefon', value: filteredData.length - totalWithPhone, fill: '#e5e7eb' }
                               ]}
                               cx="50%"
@@ -359,8 +359,8 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                           </PieChart>
                         </ResponsiveContainer>
                       </div>
-                      <div className="bg-[#005787]/10 p-2 rounded-lg">
-                        <Phone className="h-4 w-4 text-[#005787]" />
+                      <div className="brand-tint-10 p-2 rounded-lg">
+                        <Phone className="h-4 w-4 brand-text" />
                       </div>
                     </div>
                   </div>
@@ -372,7 +372,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="text-2xl font-bold text-[#005787]">{totalWithEmail}</p>
+                      <p className="text-2xl font-bold heading-contrast">{totalWithEmail}</p>
                       <p className="text-xs text-gray-600 mt-1">E-Mail-Adressen</p>
                       <p className="text-xs text-gray-500 mt-1">
                         {Math.round((totalWithEmail / filteredData.length) * 100)}% Abdeckung
@@ -384,7 +384,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                           <PieChart>
                             <Pie
                               data={[
-                                { name: 'Mit E-Mail', value: totalWithEmail, fill: '#005787' },
+                                { name: 'Mit E-Mail', value: totalWithEmail, fill: getComputedStyle(document.documentElement).getPropertyValue('--brand-500') || '#FF6A00' },
                                 { name: 'Ohne E-Mail', value: filteredData.length - totalWithEmail, fill: '#e5e7eb' }
                               ]}
                               cx="50%"
@@ -396,8 +396,8 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                           </PieChart>
                         </ResponsiveContainer>
                       </div>
-                      <div className="bg-[#005787]/10 p-2 rounded-lg">
-                        <Mail className="h-4 w-4 text-[#005787]" />
+                      <div className="brand-tint-10 p-2 rounded-lg">
+                        <Mail className="h-4 w-4 brand-text" />
                       </div>
                     </div>
                   </div>
@@ -409,7 +409,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="text-2xl font-bold text-[#005787]">{totalWithWebsite}</p>
+                      <p className="text-2xl font-bold heading-contrast">{totalWithWebsite}</p>
                       <p className="text-xs text-gray-600 mt-1">Webseiten</p>
                       <p className="text-xs text-gray-500 mt-1">
                         {Math.round((totalWithWebsite / filteredData.length) * 100)}% Abdeckung
@@ -421,7 +421,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                           <PieChart>
                             <Pie
                               data={[
-                                { name: 'Mit Website', value: totalWithWebsite, fill: '#005787' },
+                                { name: 'Mit Website', value: totalWithWebsite, fill: getComputedStyle(document.documentElement).getPropertyValue('--brand-500') || '#FF6A00' },
                                 { name: 'Ohne Website', value: filteredData.length - totalWithWebsite, fill: '#e5e7eb' }
                               ]}
                               cx="50%"
@@ -433,8 +433,8 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                           </PieChart>
                         </ResponsiveContainer>
                       </div>
-                      <div className="bg-[#005787]/10 p-2 rounded-lg">
-                        <Globe className="h-4 w-4 text-[#005787]" />
+                      <div className="brand-tint-10 p-2 rounded-lg">
+                        <Globe className="h-4 w-4 brand-text" />
                       </div>
                     </div>
                   </div>
@@ -446,11 +446,11 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-3xl font-bold text-[#005787]">{totalWithEvents}</p>
+                      <p className="text-3xl font-bold heading-contrast">{totalWithEvents}</p>
                       <p className="text-sm text-gray-600 mt-1">Mit Events</p>
                     </div>
-                    <div className="bg-[#005787]/10 p-3 rounded-lg">
-                      <TrendingUp className="h-6 w-6 text-[#005787]" />
+                    <div className="brand-tint-10 p-3 rounded-lg">
+                      <TrendingUp className="h-6 w-6 brand-text" />
                     </div>
                   </div>
                 </CardContent>
@@ -461,7 +461,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
             <Card className="border border-gray-200 shadow-md bg-white">
               <CardHeader>
                 <CardTitle className="flex items-center text-gray-900">
-                  <Building className="mr-2 h-5 w-5 text-[#005787]" />
+                  <Building className="mr-2 h-5 w-5 brand-text" />
                   Premium-Konzepte
                 </CardTitle>
               </CardHeader>
@@ -476,7 +476,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                         onClick={() => handleConceptClick(concept)}
                         className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all hover:shadow-md ${
                           isActive 
-                            ? 'bg-[#005787] text-white shadow-md' 
+                            ? 'brand-bg text-white shadow-md' 
                             : 'bg-gray-50 hover:bg-gray-100'
                         }`}
                       >
@@ -487,7 +487,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                           className={`${
                             isActive 
                               ? 'bg-white/20 text-white border-white/30' 
-                              : 'bg-[#005787]/10 text-[#005787] border-[#005787]/20'
+                              : 'brand-tint-10 text-[color:var(--brand-500)] border-[color:var(--brand-500)]/20'
                           }`}
                         >
                           {count}
@@ -510,7 +510,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Filter className="h-4 w-4 text-[#005787]" />
+                      <Filter className="h-4 w-4 brand-text" />
                       <span className="font-medium text-gray-900">Aktive Filter:</span>
                       <div className="flex flex-wrap gap-2">
                         {searchTerm && (
@@ -518,7 +518,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                             Suche: {searchTerm}
                             <button
                               onClick={() => setSearchTerm('')}
-                              className="ml-1 hover:bg-[#005787]/20 rounded-full p-1"
+                              className="ml-1 hover:brand-tint-20 rounded-full p-1"
                             >
                               <X className="h-4 w-4" />
                             </button>
@@ -529,7 +529,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                             Stadt: {filters.city}
                             <button
                               onClick={() => setFilters(prev => ({ ...prev, city: '' }))}
-                              className="ml-1 hover:bg-[#005787]/20 rounded-full p-1"
+                              className="ml-1 hover:brand-tint-20 rounded-full p-1"
                             >
                               <X className="h-4 w-4" />
                             </button>
@@ -540,7 +540,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                             PLZ: {filters.zipCode}
                             <button
                               onClick={() => setFilters(prev => ({ ...prev, zipCode: '' }))}
-                              className="ml-1 hover:bg-[#005787]/20 rounded-full p-1"
+                              className="ml-1 hover:brand-tint-20 rounded-full p-1"
                             >
                               <X className="h-4 w-4" />
                             </button>
@@ -551,7 +551,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                             Konzept: {filters.concept}
                             <button
                               onClick={() => setFilters(prev => ({ ...prev, concept: '' }))}
-                              className="ml-1 hover:bg-[#005787]/20 rounded-full p-1"
+                              className="ml-1 hover:brand-tint-20 rounded-full p-1"
                             >
                               <X className="h-4 w-4" />
                             </button>
@@ -563,7 +563,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                       variant="outline" 
                       size="sm" 
                       onClick={clearFilters}
-                      className="text-[#005787] border-[#005787] hover:bg-[#005787] hover:text-white"
+                      className="text-[color:var(--action-500)] border-[color:var(--action-500)] hover:bg-[color:var(--action-500)] hover:text-white"
                     >
                       <X className="mr-1 h-3 w-3" />
                       Filter zurücksetzen
@@ -590,7 +590,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                       variant="outline" 
                       size="sm"
                       onClick={() => setShowAllEntries(true)}
-                      className="text-[#005787] border-[#005787] hover:bg-[#005787] hover:text-white"
+                      className="text-[color:var(--action-500)] border-[color:var(--action-500)] hover:bg-[color:var(--action-500)] hover:text-white"
                     >
                       Alle {filteredData.length} anzeigen
                     </Button>
@@ -605,17 +605,17 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                       to={`/detail/${item.id}`}
                       className="block"
                     >
-                      <div className="p-6 border rounded-lg hover:shadow-md transition-all hover:border-[#005787]/30 bg-white">
+                      <div className="p-6 border rounded-lg hover:shadow-md transition-all" style={{ borderColor: 'lightgrey' }}>
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="font-semibold text-lg text-[#005787] hover:text-[#004066] mb-2">
+                            <h3 className="font-semibold text-lg heading-contrast mb-2">
                               {item.name}
                             </h3>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                               <div className="space-y-2">
                                 <div className="flex items-center text-gray-600">
-                                  <MapPin className="mr-2 h-4 w-4 text-[#005787]" />
+                                  <MapPin className="mr-2 h-4 w-4 brand-text" />
                                   <span className="text-sm">
                                     {item.street} {item.house_number}, {item.zip_code} {item.city}
                                   </span>
@@ -623,7 +623,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                                 
                                 {item.telephone && (
                                   <div className="flex items-center text-gray-600">
-                                    <Phone className="mr-2 h-4 w-4 text-[#005787]" />
+                                    <Phone className="mr-2 h-4 w-4 brand-text" />
                                     <span className="text-sm">{item.telephone}</span>
                                   </div>
                                 )}
@@ -632,7 +632,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                                   const filteredEmails = filterEmails(item.email);
                                   return filteredEmails.length > 0 && (
                                     <div className="flex items-center text-gray-600">
-                                      <Mail className="mr-2 h-4 w-4 text-[#005787]" />
+                                      <Mail className="mr-2 h-4 w-4 brand-text" />
                                       <span className="text-sm">{filteredEmails[0]}</span>
                                     </div>
                                   );
@@ -640,7 +640,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                                 
                                 {item.website_url && (
                                   <div className="flex items-center text-gray-600">
-                                    <Globe className="mr-2 h-4 w-4 text-[#005787]" />
+                                  <Globe className="mr-2 h-4 w-4 brand-text" />
                                     <span className="text-sm">{item.website_url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
                                   </div>
                                 )}
@@ -659,7 +659,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                                       {item.concepts_networks.slice(0, 3).map((concept, index) => (
                                         <Badge 
                                           key={index} 
-                                          className="bg-[#005787]/10 text-[#005787] border-[#005787]/20 text-xs"
+                                          className="bg-blue-50 text-[#005787] border-blue-200 text-xs"
                                         >
                                           {concept}
                                         </Badge>
@@ -675,8 +675,8 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                                 
                                 {item.events && item.events.length > 0 && (
                                   <div className="flex items-center">
-                                    <Calendar className="mr-2 h-4 w-4 text-[#005787]" />
-                                    <span className="text-sm text-[#005787] font-medium">
+                                    <Calendar className="mr-2 h-4 w-4 brand-text" />
+                                    <span className="text-sm heading-contrast font-medium">
                                       {item.events.length} Event{item.events.length !== 1 ? 's' : ''}
                                     </span>
                                   </div>
@@ -702,8 +702,9 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                 {!showAllEntries && filteredData.length > 50 && (
                   <div className="text-center mt-6">
                     <Button 
+                      variant="outline" 
                       onClick={() => setShowAllEntries(true)}
-                      className="bg-[#005787] hover:bg-[#004066] text-white"
+                      className="text-[color:var(--action-500)] border-[color:var(--action-500)] hover:bg-[color:var(--action-500)] hover:text-white"
                     >
                       Weitere {filteredData.length - 50} Werkstätten anzeigen
                     </Button>

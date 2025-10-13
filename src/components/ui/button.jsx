@@ -9,17 +9,19 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        // Non-ghosted → blue background, white text
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-[color:var(--action-500)] text-white shadow-xs hover:bg-[color:var(--action-600)]",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-        outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "bg-[color:var(--action-500)] text-white shadow-xs hover:bg-[color:var(--action-600)]",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "bg-[color:var(--action-500)] text-white shadow-xs hover:bg-[color:var(--action-600)]",
+        // Ghosted → auteon-mediumgray border + text
+        outline:
+          "border border-[color:var(--auteon-mediumgray)] text-[color:var(--auteon-mediumgray)] bg-background shadow-xs hover:bg-[color:var(--action-500)/0.06] dark:bg-input/30",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "text-[color:var(--action-500)] hover:bg-[color:var(--action-500)/0.06]",
+        link: "text-[color:var(--action-500)] underline-offset-4 hover:underline",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

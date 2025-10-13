@@ -1,3 +1,4 @@
+.heading-contrast { color: var(--auteon-contrast-bg) !important; }
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
@@ -59,14 +60,14 @@
   --card-foreground: oklch(0.2 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0 0);
-  --primary: oklch(0.4 0.15 240); /* ZF Blue */
+  --primary: #21DB6B; /* Auteon Green */
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.96 0 0);
   --secondary-foreground: oklch(0.2 0 0);
   --muted: oklch(0.96 0 0);
   --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.5 0.1 200); /* ZF Accent */
-  --accent-foreground: oklch(1 0 0);
+  --accent: var(--action-500); /* ZF Accent - now blue */
+  --accent-foreground: white;
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.9 0 0);
   --input: oklch(0.96 0 0);
@@ -93,14 +94,14 @@
   --card-foreground: oklch(0.95 0 0);
   --popover: oklch(0.15 0 0);
   --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.6 0.15 240);
+  --primary: #21DB6B;
   --primary-foreground: oklch(0.1 0 0);
   --secondary: oklch(0.2 0 0);
   --secondary-foreground: oklch(0.95 0 0);
   --muted: oklch(0.2 0 0);
   --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.6 0.1 200);
-  --accent-foreground: oklch(0.1 0 0);
+  --accent: var(--action-500);
+  --accent-foreground: white;
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 15%);
   --input: oklch(1 0 0 / 20%);
@@ -129,6 +130,44 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   }
 }
+
+/* Auteon brand variables (Zeroheight/Website) */
+:root {
+  /* Primary */
+  --brand-500: #21DB6B;
+  --brand-600: #169A4D; /* darker hover */
+  --brand-50:  #E9FBF1; /* light tint background */
+
+  /* Buttons/Links */
+  --action-500: #093DA7;
+  --action-600: #072E7C; /* darker hover */
+
+  /* High-contrast dark background */
+  --auteon-contrast-bg: #12121B;
+
+  /* Grays */
+  --auteon-darkgray: #6A6A6E;
+  --auteon-mediumgray: #B4B4B9;
+  --auteon-lightgray: #F2F2F8;
+}
+
+/* Helper utilities for using CSS variables with Tailwind */
+.brand-bg { background-color: var(--brand-500) !important; }
+.brand-bg-hover:hover { background-color: var(--brand-600) !important; }
+.brand-text { color: var(--brand-500) !important; }
+.brand-text-hover:hover { color: var(--brand-600) !important; }
+.brand-border { border-color: var(--brand-500) !important; }
+.brand-tint-10 { background-color: color-mix(in oklab, var(--brand-500) 10%, transparent) !important; }
+.brand-tint-20 { background-color: color-mix(in oklab, var(--brand-500) 20%, transparent) !important; }
+.brand-tint-5  { background-color: color-mix(in oklab, var(--brand-500) 5%, transparent) !important; }
+
+/* Global cursor for interactive elements */
+a, button, [role="button"], .cursor-pointer { cursor: pointer; }
+
+/* Action (buttons/links) */
+.action-bg { background-color: var(--action-500) !important; }
+.action-bg-hover:hover { background-color: var(--action-600) !important; }
+.action-text { color: var(--action-500) !important; }
 
 /* ZF specific styles */
 .zf-header {

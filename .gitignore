@@ -93,3 +93,7 @@ temp/
 
 # Vercel
 .vercel
+
+# Local server env
+server/.env
+

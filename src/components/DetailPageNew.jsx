@@ -258,7 +258,14 @@ const DetailPageNew = ({ data }) => {
                   
                   {/* Weekly Schedule */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {Object.entries(workingHours).map(([day, hours]) => {
+                    {Object.entries(workingHours)
+                      .sort((a,b) => {
+                        const order = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+                        const ia = order.indexOf(a[0]);
+                        const ib = order.indexOf(b[0]);
+                        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+                      })
+                      .map(([day, hours]) => {
                       const isToday = new Date().toLocaleDateString('de-DE', { weekday: 'long' }) === day;
                       return (
                         <div 

@@ -258,7 +258,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <Button 
                   onClick={exportFilteredCompanies}
-                  className="bg-[#005787] hover:bg-[#004066] text-white"
+                  className="action-bg action-bg-hover text-white"
                   size="sm"
                 >
                   <Download className="mr-2 h-4 w-4" />
@@ -327,7 +327,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
               <Button 
                 variant="outline" 
                 onClick={clearFilters}
-                className="text-[#005787] border-[#005787] hover:bg-[#005787] hover:text-white"
+                className="text-[color:var(--action-500)] border-[color:var(--action-500)] hover:bg-[color:var(--action-500)] hover:text-white"
               >
                 <X className="mr-2 h-4 w-4" />
                 Filter zurücksetzen
@@ -345,8 +345,8 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                   <p className="text-3xl font-bold text-[#005787]">{totalChanges}</p>
                   <p className="text-sm text-gray-600 mt-1">Management-Änderungen</p>
                 </div>
-                <div className="bg-[#005787]/10 p-3 rounded-lg">
-                  <TrendingUp className="h-6 w-6 text-[#005787]" />
+                <div className="brand-tint-10 p-3 rounded-lg">
+                  <TrendingUp className="h-6 w-6 brand-text" />
                 </div>
               </div>
             </CardContent>
@@ -359,8 +359,8 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                   <p className="text-3xl font-bold text-[#005787]">{uniqueCompanies}</p>
                   <p className="text-sm text-gray-600 mt-1">Betroffene Unternehmen</p>
                 </div>
-                <div className="bg-[#005787]/10 p-3 rounded-lg">
-                  <Users className="h-6 w-6 text-[#005787]" />
+                <div className="brand-tint-10 p-3 rounded-lg">
+                  <Users className="h-6 w-6 brand-text" />
                 </div>
               </div>
             </CardContent>
@@ -373,8 +373,8 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                   <p className="text-3xl font-bold text-[#005787]">{uniqueCities}</p>
                   <p className="text-sm text-gray-600 mt-1">Städte</p>
                 </div>
-                <div className="bg-[#005787]/10 p-3 rounded-lg">
-                  <MapPin className="h-6 w-6 text-[#005787]" />
+                <div className="brand-tint-10 p-3 rounded-lg">
+                  <MapPin className="h-6 w-6 brand-text" />
                 </div>
               </div>
             </CardContent>
@@ -387,8 +387,8 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                   <p className="text-3xl font-bold text-[#005787]">{recentChanges}</p>
                   <p className="text-sm text-gray-600 mt-1">Letzte 3 Monate</p>
                 </div>
-                <div className="bg-[#005787]/10 p-3 rounded-lg">
-                  <Calendar className="h-6 w-6 text-[#005787]" />
+                <div className="brand-tint-10 p-3 rounded-lg">
+                  <Calendar className="h-6 w-6 brand-text" />
                 </div>
               </div>
             </CardContent>
@@ -409,7 +409,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                 <Link 
                   key={index} 
                   to={`/detail/${event.workshop_id}`}
-                  className="block border rounded-lg p-6 bg-gray-50 hover:bg-gray-100 transition-colors hover:shadow-md cursor-pointer"
+                  className="block border rounded-lg p-6 bg-white hover:bg-gray-50 transition-colors hover:shadow-md cursor-pointer"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">

@@ -164,9 +164,9 @@ const DetailPageClean = ({ data }) => {
                         {item.zip_code} {item.city}
                       </p>
                       <Button 
-                        variant="outline" 
+                        variant="default" 
                         size="sm" 
-                        className="mt-3 text-[#005787] border-[#005787] hover:bg-[#005787] hover:text-white"
+                        className="mt-3"
                         onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(item.street + ' ' + item.house_number + ', ' + item.zip_code + ' ' + item.city)}`, '_blank')}
                       >
                         <MapPin className="mr-1 h-3 w-3" />
@@ -250,7 +250,14 @@ const DetailPageClean = ({ data }) => {
                   
                   {/* Weekly Schedule */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {Object.entries(workingHours).map(([day, hours]) => {
+                    {Object.entries(workingHours)
+                      .sort((a,b) => {
+                        const order = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+                        const ia = order.indexOf(a[0]);
+                        const ib = order.indexOf(b[0]);
+                        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+                      })
+                      .map(([day, hours]) => {
                       const isToday = new Date().toLocaleDateString('de-DE', { weekday: 'long' }) === day;
                       return (
                         <div 

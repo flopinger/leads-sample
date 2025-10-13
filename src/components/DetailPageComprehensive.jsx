@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import { getOpeningStatus } from '../utils/openingHours';
 import auteonLogo from '../assets/auteon-logo.jpg';
 import { filterEmails, filterEmailsFromArray, shouldFilterEmail } from '../utils/emailFilter';
 import { 
@@ -84,35 +85,35 @@ const DetailPageComprehensive = () => {
 
   // Get company photo from Google Business data
   const getCompanyPhoto = () => {
-    if (!googleData) return null;
-    return safeGet(googleData, 'photo');
+    if (!googleData) {
+      console.log('No googleData available');
+      return null;
+    }
+    const photo = safeGet(googleData, 'photo');
+    console.log('Photo URL:', photo);
+    return photo;
   };
 
   // Consistent styling system
   const badgeStyles = {
-    // Status badges
+    // Status badges (Aktiv bleibt grün)
     status: {
-      active: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      active: "bg-green-100 text-green-800 border-green-300",
       inactive: "bg-red-50 text-red-700 border-red-200",
-      operational: "bg-emerald-50 text-emerald-700 border-emerald-200"
+      operational: "bg-green-100 text-green-800 border-green-300"
     },
-    // Classification badges
-    classification: "bg-slate-50 text-slate-700 border-slate-200",
-    // Concept badges
-    concept: "bg-blue-50 text-blue-700 border-blue-200",
-    // Network badges
-    network: "bg-purple-50 text-purple-700 border-purple-200",
-    // Service badges
-    service: "bg-green-50 text-green-700 border-green-200",
-    // Date badges
-    date: "bg-orange-50 text-orange-700 border-orange-200",
-    // Legal form badges
+    // Vereinheitlichtes Blau für sonstige Badges
+    classification: "bg-blue-50 text-[#005787] border-blue-200",
+    concept: "bg-blue-50 text-[#005787] border-blue-200",
+    network: "bg-blue-50 text-[#005787] border-blue-200",
+    service: "bg-blue-50 text-[#005787] border-blue-200",
+    date: "bg-blue-50 text-[#005787] border-blue-200",
     legalForm: {
-      gmbh: "bg-blue-50 text-blue-700 border-blue-200",
-      ug: "bg-green-50 text-green-700 border-green-200",
-      default: "bg-gray-50 text-gray-700 border-gray-200"
+      gmbh: "bg-blue-50 text-[#005787] border-blue-200",
+      ug: "bg-blue-50 text-[#005787] border-blue-200",
+      default: "bg-blue-50 text-[#005787] border-blue-200"
     },
-    // Callout badges
+    // Callout (lassen wir grün)
     callout: "bg-green-100 text-green-800 border-green-300"
   };
 
@@ -804,7 +805,7 @@ const DetailPageComprehensive = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link to="/">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="hover:bg-[color:var(--action-500)] hover:text-white">
                   ← Zurück
                 </Button>
               </Link>
@@ -852,7 +853,7 @@ const DetailPageComprehensive = () => {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <Button 
                   onClick={exportCurrentWorkshop}
-                  className="bg-[#005787] hover:bg-[#004066] text-white"
+                  className="action-bg action-bg-hover text-white"
                   size="sm"
                 >
                   <Download className="mr-2 h-4 w-4" />
@@ -943,8 +944,8 @@ const DetailPageComprehensive = () => {
                         <div className="space-y-2">
                           {getAllWebsites().map((website, index) => (
                             <div key={index} className="flex items-center">
-                              <a href={website} target="_blank" rel="noopener noreferrer" className="text-[#005787] hover:text-[#004066] font-medium flex items-center">
-                                {website}
+                              <a href={website} target="_blank" rel="noopener noreferrer" className="text-[#005787] hover:text-[#004066] font-medium flex items-center" title={website}>
+                                {website.length > 20 ? website.substring(0, 20) + '...' : website}
                                 <ExternalLink className="w-3 h-3 ml-1" />
                               </a>
               </div>
@@ -1007,8 +1008,8 @@ const DetailPageComprehensive = () => {
                         <div className="space-y-2">
                           {getBookingLinks().map((link, index) => (
                             <div key={index} className="flex items-center">
-                              <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-[#005787] hover:text-[#004066] font-medium flex items-center">
-                                {link.type}
+                              <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-[#005787] hover:text-[#004066] font-medium flex items-center" title={link.type}>
+                                {link.type.length > 20 ? link.type.substring(0, 20) + '...' : link.type}
                                 <ExternalLink className="w-3 h-3 ml-1" />
                               </a>
                             </div>
@@ -1040,7 +1041,7 @@ const DetailPageComprehensive = () => {
                         <CheckCircle className={`w-4 h-4 mr-2 ${safeGet(workshop, 'operational_status') === 'OPERATIONAL' ? 'text-green-600' : 'text-red-600'}`} />
                         Betriebsstatus
                       </h4>
-                      <Badge variant={safeGet(workshop, 'operational_status') === 'OPERATIONAL' ? 'default' : 'destructive'} className="text-sm">
+                      <Badge variant={safeGet(workshop, 'operational_status') === 'OPERATIONAL' ? 'active' : 'destructive'} className="text-sm">
                         {safeGet(workshop, 'operational_status') === 'OPERATIONAL' ? 'Aktiv' : 'Inaktiv'}
                       </Badge>
                   </div>
@@ -1052,7 +1053,7 @@ const DetailPageComprehensive = () => {
                           <Tag className="w-4 h-4 mr-2 text-gray-600" />
                           Hauptklassifikation
                         </h4>
-                        <Badge variant="outline" className="text-sm bg-white">
+                        <Badge variant="outline" className="text-sm">
                           {safeGet(workshop, 'primary_classification')}
                         </Badge>
                       </div>
@@ -1065,7 +1066,7 @@ const DetailPageComprehensive = () => {
                           <Building className="w-4 h-4 mr-2 text-gray-600" />
                           Geschäftstyp
                         </h4>
-                        <Badge variant="outline" className="text-sm bg-white">
+                        <Badge variant="outline" className="text-sm">
                           {translateBusinessType(safeGet(googleData, 'type'))}
                         </Badge>
                       </div>
@@ -1083,7 +1084,7 @@ const DetailPageComprehensive = () => {
                         </h4>
                         <div className="flex flex-wrap gap-2">
                           {getServiceTypes().map((type, index) => (
-                            <Badge key={index} variant="outline" className="text-sm bg-white">
+                            <Badge key={index} variant="outline" className="text-sm">
                               {translateServiceType(type)}
                             </Badge>
                           ))}
@@ -1149,39 +1150,39 @@ const DetailPageComprehensive = () => {
                       <Clock className="w-5 h-5 text-[#005787] mr-2" />
                     Öffnungszeiten
                   </CardTitle>
-                    {/* Current Status */}
+                    {/* Current Status via openingHours util */}
                   {(() => {
-                      const currentStatus = isCurrentlyOpen();
-                      const nextOpening = getNextOpeningTime();
-
-                      if (currentStatus === true) {
-                    return (
-                          <div className="flex items-center bg-green-50 border border-green-200 rounded-lg px-3 py-2">
-                            <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                            <span className="text-sm font-semibold text-green-700">Jetzt geöffnet</span>
-                      </div>
-                    );
-                      } else if (currentStatus === false) {
-                        return (
-                          <div className="flex items-center bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                            <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                            <span className="text-sm font-semibold text-red-700">
-                              {nextOpening ? (
-                                nextOpening.isToday ?
-                                  `Öffnet heute um ${nextOpening.time}` :
-                                  `Öffnet ${nextOpening.day} um ${nextOpening.time}`
-                              ) : 'Geschlossen'}
-                            </span>
-                      </div>
-                    );
-                      }
-                      return null;
+                    const { status, message } = getOpeningStatus(workingHours);
+                    if (status === 'open' || status === 'closing-soon') {
+                      return (
+                        <div className="flex items-center bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                          <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                          <span className="text-sm font-semibold text-green-700">{message}</span>
+                        </div>
+                      );
+                    }
+                    if (status === 'opening-soon' || status === 'closed') {
+                      return (
+                        <div className="flex items-center bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                          <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                          <span className="text-sm font-semibold text-red-700">{message}</span>
+                        </div>
+                      );
+                    }
+                    return null;
                   })()}
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {Object.entries(workingHours).map(([day, hours]) => {
+                    {Object.entries(workingHours)
+                      .sort((a,b) => {
+                        const order = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+                        const ia = order.indexOf(a[0]);
+                        const ib = order.indexOf(b[0]);
+                        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+                      })
+                      .map(([day, hours]) => {
                       const now = new Date();
                       const currentDay = now.toLocaleDateString('de-DE', { weekday: 'long' });
                       const isToday = day === currentDay;
@@ -1504,7 +1505,7 @@ const DetailPageComprehensive = () => {
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
                     {getServiceTypes().map((service, index) => (
-                      <Badge key={index} variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200">
+                      <Badge key={index} variant="outline" className="text-sm bg-blue-50 text-[#005787] border-blue-200">
                         {translateServiceType(service)}
                       </Badge>
                     ))}
@@ -1559,7 +1560,7 @@ const DetailPageComprehensive = () => {
                   {/* Route Planning */}
                   <div className="space-y-2">
                     <Button 
-                      className="w-full bg-[#005787] hover:bg-[#004066]"
+                      className="w-full"
                       onClick={() => {
                         const coordinates = getCoordinates();
                         if (coordinates) {
@@ -1592,8 +1593,14 @@ const DetailPageComprehensive = () => {
                       src={getCompanyPhoto()} 
                       alt={`${safeGet(workshop, 'name', 'Werkstatt')} Foto`}
                       className="w-full h-64 object-cover"
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
                       onError={(e) => {
-                        e.target.style.display = 'none';
+                        console.error('Image failed to load:', e.target.src);
+                        e.target.style.border = '2px solid red';
+                      }}
+                      onLoad={(e) => {
+                        console.log('Image loaded successfully:', e.target.src);
                       }}
                     />
                   </div>

@@ -403,7 +403,14 @@ const DetailPageFixed = ({ data }) => {
             
             {/* Opening Hours Table */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              {Object.entries(workingHours).map(([day, hours]) => {
+              {Object.entries(workingHours)
+                .sort((a,b) => {
+                  const order = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+                  const ia = order.indexOf(a[0]);
+                  const ib = order.indexOf(b[0]);
+                  return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+                })
+                .map(([day, hours]) => {
                 const isToday = new Date().toLocaleDateString('de-DE', { weekday: 'long' }) === day;
                 return (
                   <div key={day} className={`flex justify-between p-2 rounded ${isToday ? 'bg-[#005787] text-white' : ''}`}>

@@ -246,7 +246,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <Button 
                   onClick={exportFilteredCompanies}
-                  className="bg-[#005787] hover:bg-[#004066] text-white"
+                  className="action-bg action-bg-hover text-white"
                   size="sm"
                 >
                   <Download className="mr-2 h-4 w-4" />
@@ -263,7 +263,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
         {/* Search and Filters */}
         <Card className="border border-gray-200 shadow-md bg-white mb-8">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <Input
                   placeholder="Suchen nach Firma, Ort, Geschäftsführer..."
@@ -315,7 +315,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
               <Button 
                 variant="outline" 
                 onClick={clearFilters}
-                className="text-[#005787] border-[#005787] hover:bg-[#005787] hover:text-white"
+                className="text-[color:var(--action-500)] border-[color:var(--action-500)] hover:bg-[color:var(--action-500)] hover:text-white"
               >
                 <X className="mr-2 h-4 w-4" />
                 Filter zurücksetzen
@@ -333,8 +333,8 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                   <p className="text-3xl font-bold text-[#005787]">{totalFoundings}</p>
                   <p className="text-sm text-gray-600 mt-1">Gründungen</p>
                 </div>
-                <div className="bg-[#005787]/10 p-3 rounded-lg">
-                  <Building className="h-6 w-6 text-[#005787]" />
+                <div className="brand-tint-10 p-3 rounded-lg">
+                  <Building className="h-6 w-6 brand-text" />
                 </div>
               </div>
             </CardContent>
@@ -347,8 +347,8 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                   <p className="text-3xl font-bold text-[#005787]">{gmbhCount}</p>
                   <p className="text-sm text-gray-600 mt-1">GmbH</p>
                 </div>
-                <div className="bg-[#005787]/10 p-3 rounded-lg">
-                  <Building className="h-6 w-6 text-[#005787]" />
+                <div className="brand-tint-10 p-3 rounded-lg">
+                  <Building className="h-6 w-6 brand-text" />
                 </div>
               </div>
             </CardContent>
@@ -361,8 +361,8 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                   <p className="text-3xl font-bold text-[#005787]">{ugCount}</p>
                   <p className="text-sm text-gray-600 mt-1">UG</p>
                 </div>
-                <div className="bg-[#005787]/10 p-3 rounded-lg">
-                  <Building className="h-6 w-6 text-[#005787]" />
+                <div className="brand-tint-10 p-3 rounded-lg">
+                  <Building className="h-6 w-6 brand-text" />
                 </div>
               </div>
             </CardContent>
@@ -375,8 +375,8 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                   <p className="text-3xl font-bold text-[#005787]">{uniqueCities}</p>
                   <p className="text-sm text-gray-600 mt-1">Städte</p>
                 </div>
-                <div className="bg-[#005787]/10 p-3 rounded-lg">
-                  <MapPin className="h-6 w-6 text-[#005787]" />
+                <div className="brand-tint-10 p-3 rounded-lg">
+                  <MapPin className="h-6 w-6 brand-text" />
                 </div>
               </div>
             </CardContent>
@@ -397,7 +397,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                 <Link 
                   key={index} 
                   to={`/detail/${event.workshop_id}`}
-                  className="block border rounded-lg p-6 bg-gray-50 hover:bg-gray-100 transition-colors hover:shadow-md cursor-pointer"
+                  className="block border rounded-lg p-6 bg-white hover:bg-gray-50 transition-colors hover:shadow-md cursor-pointer"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">

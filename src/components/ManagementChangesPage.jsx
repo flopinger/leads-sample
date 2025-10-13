@@ -278,7 +278,7 @@ const ManagementChangesPage = ({ data }) => {
           </div>
           
           <div className="text-sm text-muted-foreground mb-6">
-            <p>© 2025 auteon GmbH. Alle Rechte vorbehalten.</p>
+            <p>© 2025 auteon GmbH.</p>
           </div>
 
           {/* Disclaimer */}
