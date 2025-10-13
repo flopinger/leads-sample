@@ -4,7 +4,14 @@ import nodemailer from 'nodemailer';
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
   try {
-    const { name, company, email, message } = req.body || {};
+    const raw = await new Promise((resolve) => {
+      let body = '';
+      req.on('data', (c) => (body += c));
+      req.on('end', () => resolve(body));
+    });
+    let parsed = {};
+    try { parsed = raw ? JSON.parse(raw) : {}; } catch {}
+    const { name, company, email, message } = parsed || {};
     if (!name || !email) return res.status(400).json({ ok: false, error: 'Missing fields' });
 
     const transporter = nodemailer.createTransport({
