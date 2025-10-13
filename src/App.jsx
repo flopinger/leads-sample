@@ -55,6 +55,10 @@ function App() {
       // Ensure user property is set whenever tenantName is known
       if (tenantName) {
         window.gtag('set', 'user_properties', { tenant: tenantName });
+        // Also update config so subsequent events definitely carry the property
+        window.gtag('config', 'G-ZCG0Z3F5RE', { user_properties: { tenant: tenantName } });
+        // Emit a small test event so DebugView reflects the change immediately
+        window.gtag('event', 'tenant_ready', { tenant: tenantName, debug_mode: true });
       }
       window.gtag('event', 'page_view', { tenant: tenantName || undefined });
     }
