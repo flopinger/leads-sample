@@ -1,3 +1,4 @@
+export const config = { runtime: 'nodejs20.x' };
 import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {

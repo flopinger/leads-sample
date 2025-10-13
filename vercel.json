@@ -1,12 +1,8 @@
 {
+  "version": 2,
   "framework": "vite",
   "installCommand": "pnpm install --no-frozen-lockfile",
-  "buildCommand": "pnpm build",
-  "functions": {
-    "api/**/*": {
-      "runtime": "nodejs20.x"
-    }
-  }
+  "buildCommand": "pnpm build"
 }
 
 

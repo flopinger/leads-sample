@@ -1,3 +1,4 @@
+export const config = { runtime: 'edge' };
 import { getCookie, verifyJwt, getTenantMap } from './_utils.js';
 
 export default async function handler(req, res) {
