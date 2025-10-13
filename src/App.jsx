@@ -52,6 +52,10 @@ function App() {
       try { document.title = `Werkstattadressen – ${tenantName}`; } catch {}
     }
     if (window.gtag) {
+      // Ensure user property is set whenever tenantName is known
+      if (tenantName) {
+        window.gtag('set', 'user_properties', { tenant: tenantName });
+      }
       window.gtag('event', 'page_view', { tenant: tenantName || undefined });
     }
   }, [latestUpdatedAt, tenantName]);
