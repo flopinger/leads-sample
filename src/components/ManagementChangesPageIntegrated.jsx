@@ -575,13 +575,13 @@ const ManagementChangesPageIntegrated = ({ data }) => {
           <div className="mt-6 max-w-4xl mx-auto">
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-gray-800 mb-2">
-                Wichtiger Hinweis zu den Daten
+                {t('footer.importantNotice')}
               </h3>
               <div className="text-xs text-gray-600 space-y-1">
-                <p>Die bereitgestellten Daten dienen ausschließlich als Beispiel („Sample") und dürfen nur in Stichproben zur Qualitätsüberprüfung verwendet werden. Eine vollständige Nutzung, Weitergabe oder sonstige Verwertung ist nicht gestattet.</p>
-                <p>Jede Verwendung der Daten muss vom Verwender eigenverantwortlich auf ihre DSGVO-Konformität geprüft werden. auteon erteilt mit der Bereitstellung ausdrücklich keine Rechte zur Nutzung der Daten außerhalb der geltenden datenschutzrechtlichen Bestimmungen.</p>
+                <p>{t('footer.sampleUsage')}</p>
+                <p>{t('footer.gdprCompliance')}</p>
                 <p>{t('common.disclaimer')}</p>
-                <p><strong>Alle Daten ohne Gewähr.</strong></p>
+                <p><strong>{t('footer.noWarranty')}</strong></p>
               </div>
             </div>
           </div>

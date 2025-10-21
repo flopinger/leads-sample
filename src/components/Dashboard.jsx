@@ -682,13 +682,16 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
               <div className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0">⚠️</div>
               <div className="text-sm text-gray-700">
                 <p className="mb-3">
-                  Die bereitgestellten Daten dienen ausschließlich als Beispiel („Sample") und dürfen nur in Stichproben zur Qualitätsüberprüfung verwendet werden. Eine vollständige Nutzung, Weitergabe oder sonstige Verwertung ist nicht gestattet.
+                  {t('footer.sampleUsage')}
                 </p>
                 <p className="mb-3">
-                  Jede Verwendung der Daten muss vom Verwender eigenverantwortlich auf ihre DSGVO-Konformität geprüft werden. auteon erteilt mit der Bereitstellung ausdrücklich keine Rechte zur Nutzung der Daten außerhalb der geltenden datenschutzrechtlichen Bestimmungen.
+                  {t('footer.gdprCompliance')}
                 </p>
                 <p>
                   {t('common.disclaimer')}
+                </p>
+                <p className="mt-3">
+                  <strong>{t('footer.noWarranty')}</strong>
                 </p>
               </div>
             </div>
