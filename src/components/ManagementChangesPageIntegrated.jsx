@@ -277,7 +277,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
             <div className="flex items-center space-x-4">
               <Link to="/">
                 <Button variant="outline" size="sm">
-                  ← Zurück
+                  {t('common.backToOverview')}
                 </Button>
               </Link>
               <h1 className="text-2xl font-bold text-gray-900">{t('managementChanges.title')}</h1>
@@ -385,7 +385,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                 className="text-[color:var(--action-500)] border-[color:var(--action-500)] hover:bg-[color:var(--action-500)] hover:text-white"
               >
                 <X className="mr-2 h-4 w-4" />
-                Filter zurücksetzen
+                {t('common.clearFilters')}
               </Button>
             </div>
           </CardContent>
@@ -550,9 +550,9 @@ const ManagementChangesPageIntegrated = ({ data }) => {
               {filteredEvents.length === 0 && (
                 <div className="text-center py-12">
                   <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Keine Management-Änderungen gefunden</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">{t('common.noResultsFound')}</h3>
                   <p className="text-gray-500">
-                    Versuchen Sie, Ihre Suchkriterien anzupassen oder die Filter zurückzusetzen.
+                    {t('common.noResultsText')}
                   </p>
                 </div>
               )}
@@ -580,7 +580,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
               <div className="text-xs text-gray-600 space-y-1">
                 <p>Die bereitgestellten Daten dienen ausschließlich als Beispiel („Sample") und dürfen nur in Stichproben zur Qualitätsüberprüfung verwendet werden. Eine vollständige Nutzung, Weitergabe oder sonstige Verwertung ist nicht gestattet.</p>
                 <p>Jede Verwendung der Daten muss vom Verwender eigenverantwortlich auf ihre DSGVO-Konformität geprüft werden. auteon erteilt mit der Bereitstellung ausdrücklich keine Rechte zur Nutzung der Daten außerhalb der geltenden datenschutzrechtlichen Bestimmungen.</p>
-                <p>Die Daten stammen nicht aus vertraulichen Informationen, die Werkstätten auteon im Rahmen der Nutzung von auteon übermittelt haben oder daraus entstanden sind.</p>
+                <p>{t('common.disclaimer')}</p>
                 <p><strong>Alle Daten ohne Gewähr.</strong></p>
               </div>
             </div>

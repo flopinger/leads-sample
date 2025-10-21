@@ -563,7 +563,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Filter className="h-4 w-4 brand-text" />
-                      <span className="font-medium text-gray-900">Aktive Filter:</span>
+                      <span className="font-medium text-gray-900">{t('common.activeFilters')}</span>
                       <div className="flex flex-wrap gap-2">
                         {searchTerm && (
                           <Badge className={`${badgeStyles.classification} flex items-center gap-2 px-3 py-2 text-sm font-medium`}>
@@ -618,7 +618,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                       className="text-[color:var(--action-500)] border-[color:var(--action-500)] hover:bg-[color:var(--action-500)] hover:text-white"
                     >
                       <X className="mr-1 h-3 w-3" />
-                      Filter zurücksetzen
+                      {t('common.clearFilters')}
                     </Button>
                   </div>
                 </CardContent>
@@ -787,7 +787,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
               <div className="text-xs text-gray-600 space-y-1">
                 <p>Die bereitgestellten Daten dienen ausschließlich als Beispiel („Sample") und dürfen nur in Stichproben zur Qualitätsüberprüfung verwendet werden. Eine vollständige Nutzung, Weitergabe oder sonstige Verwertung ist nicht gestattet.</p>
                 <p>Jede Verwendung der Daten muss vom Verwender eigenverantwortlich auf ihre DSGVO-Konformität geprüft werden. auteon erteilt mit der Bereitstellung ausdrücklich keine Rechte zur Nutzung der Daten außerhalb der geltenden datenschutzrechtlichen Bestimmungen.</p>
-                <p>Die Daten stammen nicht aus vertraulichen Informationen, die Werkstätten auteon im Rahmen der Nutzung von auteon übermittelt haben oder daraus entstanden sind.</p>
+                <p>{t('common.disclaimer')}</p>
                 <p><strong>Alle Daten ohne Gewähr.</strong></p>
               </div>
             </div>

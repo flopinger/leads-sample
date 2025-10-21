@@ -40,8 +40,10 @@ import {
   ChevronDown,
   Code
 } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const DetailPageComprehensive = () => {
+  const { t } = useLanguage();
   const { id } = useParams();
   const [workshop, setWorkshop] = useState(null);
   const [googleData, setGoogleData] = useState(null);
@@ -246,7 +248,7 @@ const DetailPageComprehensive = () => {
         const foundWorkshop = data.find(w => w.id === id);
         if (!foundWorkshop) {
           console.error('Workshop not found for ID:', id);
-          setError('Werkstatt nicht gefunden');
+          setError(t('common.notFound'));
           return;
         }
         
@@ -275,7 +277,7 @@ const DetailPageComprehensive = () => {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching workshop data:', err);
-        setError('Fehler beim Laden der Daten: ' + err.message);
+        setError(t('common.loadingError') + ': ' + err.message);
         setLoading(false);
       }
     };
@@ -799,12 +801,12 @@ const DetailPageComprehensive = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Fehler</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('common.error')}</h2>
           <p className="text-gray-600 mb-4">{error}</p>
             <Link to="/">
             <Button className="bg-[#005787] hover:bg-[#004066]">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Zurück zur Übersicht
+                {t('detailPage.backToOverview')}
               </Button>
             </Link>
           </div>
@@ -816,12 +818,12 @@ const DetailPageComprehensive = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Werkstatt nicht gefunden</h2>
-          <p className="text-gray-600 mb-4">Die angeforderte Werkstatt konnte nicht gefunden werden.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('common.notFound')}</h2>
+          <p className="text-gray-600 mb-4">{t('common.notFoundText')}</p>
           <Link to="/">
             <Button className="bg-[#005787] hover:bg-[#004066]">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Zurück zur Übersicht
+              {t('detailPage.backToOverview')}
             </Button>
           </Link>
         </div>
@@ -838,7 +840,7 @@ const DetailPageComprehensive = () => {
             <div className="flex items-center space-x-4">
               <Link to="/">
                 <Button variant="outline" size="sm" className="hover:bg-[color:var(--action-500)] hover:text-white">
-                  ← Zurück
+                  {t('common.backToOverview')}
                 </Button>
               </Link>
               <div className="flex items-center space-x-3">
@@ -1683,7 +1685,7 @@ const DetailPageComprehensive = () => {
               <div className="text-xs text-gray-600 space-y-1">
                 <p>Die bereitgestellten Daten dienen ausschließlich als Beispiel („Sample") und dürfen nur in Stichproben zur Qualitätsüberprüfung verwendet werden. Eine vollständige Nutzung, Weitergabe oder sonstige Verwertung ist nicht gestattet.</p>
                 <p>Jede Verwendung der Daten muss vom Verwender eigenverantwortlich auf ihre DSGVO-Konformität geprüft werden. auteon erteilt mit der Bereitstellung ausdrücklich keine Rechte zur Nutzung der Daten außerhalb der geltenden datenschutzrechtlichen Bestimmungen.</p>
-                <p>Die Daten stammen nicht aus vertraulichen Informationen, die Werkstätten auteon im Rahmen der Nutzung von auteon übermittelt haben oder daraus entstanden sind.</p>
+                <p>{t('common.disclaimer')}</p>
                 <p><strong>Alle Daten ohne Gewähr.</strong></p>
               </div>
             </div>

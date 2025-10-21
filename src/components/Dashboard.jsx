@@ -17,8 +17,10 @@ import MapComponent from './MapComponent';
 import auteonLogo from '../assets/auteon-logo.jpg';
 import { processConceptsNetworks, createExportData, createCSVExportData, PREMIUM_CONCEPTS } from '../utils/dataUtils';
 import { DATA_LAST_UPDATED } from '../utils/constants';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => {
+  const { t } = useLanguage();
   const [showAllEntries, setShowAllEntries] = useState(false);
   const [processedData, setProcessedData] = useState([]);
 
@@ -185,7 +187,7 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Filter className="h-4 w-4 text-blue-600" />
-                <span className="font-medium text-blue-800">Aktive Filter</span>
+                <span className="font-medium text-blue-800">{t('common.activeFilters')}</span>
               </div>
               <Button 
                 variant="outline" 
@@ -194,7 +196,7 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
                 className="text-blue-600 border-blue-300 hover:bg-blue-100"
               >
                 <X className="h-3 w-3 mr-1" />
-                Filter zurücksetzen
+                {t('common.clearFilters')}
               </Button>
             </div>
             
@@ -213,7 +215,7 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
                 </div>
               )}
               <div className="font-medium">
-                {filteredData.length} von {processedData.length} Einträgen gefunden
+                {filteredData.length} {t('common.of')} {processedData.length} {t('common.entries')} {t('common.found')}
               </div>
             </div>
           </CardContent>
@@ -522,9 +524,9 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
           {filteredData.length === 0 ? (
             <div className="text-center py-12">
               <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-2">Keine Werkstätten gefunden</p>
+              <p className="text-muted-foreground mb-2">{t('common.noResultsFound')}</p>
               <p className="text-sm text-muted-foreground">
-                Versuchen Sie andere Suchbegriffe oder entfernen Sie die Filter.
+                {t('common.noResultsText')}
               </p>
             </div>
           ) : (
@@ -686,7 +688,7 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
                   Jede Verwendung der Daten muss vom Verwender eigenverantwortlich auf ihre DSGVO-Konformität geprüft werden. auteon erteilt mit der Bereitstellung ausdrücklich keine Rechte zur Nutzung der Daten außerhalb der geltenden datenschutzrechtlichen Bestimmungen.
                 </p>
                 <p>
-                  Die Daten stammen nicht aus vertraulichen Informationen, die Werkstätten auteon im Rahmen der Nutzung von auteon übermittelt haben oder daraus entstanden sind.
+                  {t('common.disclaimer')}
                 </p>
               </div>
             </div>

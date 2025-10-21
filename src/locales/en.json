@@ -14,7 +14,19 @@
     "login": "Login",
     "dataAsOf": "As of",
     "total": "total",
-    "back": "Back"
+    "back": "Back",
+    "backToOverview": "← Back",
+    "clearFilters": "Clear filters",
+    "activeFilters": "Active filters:",
+    "noResultsFound": "No results found",
+    "noResultsText": "Try adjusting your search criteria or clearing the filters.",
+    "loadingError": "Error loading data",
+    "notFound": "Not found",
+    "notFoundText": "The requested item could not be found.",
+    "disclaimer": "The data does not originate from confidential information that workshops have transmitted to auteon or that arose from it.",
+    "of": "of",
+    "entries": "entries",
+    "found": "found"
   },
   "languages": {
     "en": "English",
