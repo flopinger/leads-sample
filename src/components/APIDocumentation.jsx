@@ -15,8 +15,10 @@ import {
   Shield,
   Zap
 } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const APIDocumentation = ({ apiKey, apiUsage, apiLimit, apiValidTo }) => {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [usageData, setUsageData] = useState(null);
 
@@ -106,8 +108,8 @@ print(data)`
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">API-Dokumentation</h1>
-          <p className="text-gray-600 mt-2">Zugriff auf Werkstattdaten, Gründungen und Management-Änderungen</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('api.title')}</h1>
+          <p className="text-gray-600 mt-2">{t('api.subtitle')}</p>
         </div>
         
         <div className="space-y-6">
@@ -116,14 +118,14 @@ print(data)`
         <CardHeader>
           <CardTitle className="flex items-center">
             <Key className="h-5 w-5 mr-2" />
-            Ihr API-Zugang
+            {t('api.apiKeyStatus')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* API Key */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
-              API Key
+              {t('api.yourApiKey')}
             </label>
             {apiKey ? (
               <div className="flex items-center space-x-2">
