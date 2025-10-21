@@ -87,7 +87,8 @@ export default async function handler(req, res) {
       query = query.eq('zip_code', zipCode);
     }
     if (concept) {
-      query = query.contains('concepts', [concept]);
+      // Try both possible column names for concepts
+      query = query.or(`concepts_networks.cs.{${concept}},concepts.cs.{${concept}}`);
     }
 
     // Apply pagination
@@ -99,7 +100,11 @@ export default async function handler(req, res) {
 
     if (error) {
       console.error('Database error:', error);
-      return res.status(500).json({ error: 'Database error' });
+      console.error('Query details:', { search, city, zipCode, concept, limit, offset });
+      return res.status(500).json({ 
+        error: 'Database error',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
     }
 
     // Increment usage
