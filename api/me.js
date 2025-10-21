@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     try {
       const { data: tenant, error } = await supabase
         .from('tenants')
-        .select('api_key, api_usage, api_limit, api_validto, logo_file')
+        .select('api_key, api_usage, api_limit, api_validto, logo_file, user_language')
         .eq('username', payload.user)
         .maybeSingle();
       
@@ -28,7 +28,8 @@ export default async function handler(req, res) {
           apiUsage: tenant.api_usage,
           apiLimit: tenant.api_limit,
           apiValidTo: tenant.api_validto,
-          logoFile: tenant.logo_file
+          logoFile: tenant.logo_file,
+          userLanguage: tenant.user_language || 'en'
         };
       }
     } catch (error) {

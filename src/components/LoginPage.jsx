@@ -5,8 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 import auteonLogo from '../assets/auteon-logo.jpg';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const LoginPage = ({ onLogin }) => {
+  const { t } = useLanguage();
   const [password, setPassword] = useState('');
   const [user, setUser] = useState('zf');
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +26,7 @@ const LoginPage = ({ onLogin }) => {
 
     const success = await onLogin(password.trim(), (user || '').trim().toLowerCase());
     if (!success) {
-      setError('Falsches Passwort. Bitte versuchen Sie es erneut.');
+      setError(t('login.loginError'));
     }
     
     setIsLoading(false);
@@ -31,29 +34,34 @@ const LoginPage = ({ onLogin }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--brand-50)] via-background to-[var(--brand-50)] p-4">
+      {/* Language Switcher - Top Right */}
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher variant="outline" size="default" showLabel={true} />
+      </div>
+      
       <div className="w-full max-w-md">
         {/* Branding */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-24 h-24 mb-4 rounded-full border-4 shadow-sm overflow-hidden bg-white" style={{ borderColor: 'color-mix(in oklab, var(--action-500) 20%, transparent)' }}>
             <img src={auteonLogo} alt="auteon" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">Daten-Sample</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-2">{t('login.subtitle')}</h1>
 
         </div>
 
         <Card className="shadow-lg" style={{ borderColor: '#F2F2F8' }}>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Anmeldung</CardTitle>
+            <CardTitle className="text-2xl text-center">{t('login.title')}</CardTitle>
 
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* User field first */}
-              <label htmlFor="user" className="text-sm font-medium block text-gray-300 mb-1">Benutzer</label>
-              <Input id="user" value={user} onChange={(e) => setUser(e.target.value)} placeholder="Benutzer (z. B. zf oder auteon)" />
+              <label htmlFor="user" className="text-sm font-medium block text-gray-300 mb-1">{t('login.username')}</label>
+              <Input id="user" value={user} onChange={(e) => setUser(e.target.value)} placeholder={t('login.username')} />
 
               {/* Password field */}
-              <label htmlFor="password" className="text-sm font-medium block text-gray-300 mb-1">Passwort</label>
+              <label htmlFor="password" className="text-sm font-medium block text-gray-300 mb-1">{t('login.password')}</label>
               <div className="relative">
                 <Input
                   id="password"
@@ -61,7 +69,7 @@ const LoginPage = ({ onLogin }) => {
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Passwort eingeben"
+                  placeholder={t('login.password')}
                   className="pr-10"
                   required
                 />
@@ -89,12 +97,12 @@ const LoginPage = ({ onLogin }) => {
                 {isLoading ? (
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 border-2 border-white/80 border-t-transparent rounded-full animate-spin" />
-                    <span>Anmelden...</span>
+                    <span>{t('common.loading')}</span>
                   </div>
                 ) : (
                   <div className="flex items-center space-x-2">
                     <Lock size={16} />
-                    <span>Anmelden</span>
+                    <span>{t('login.loginButton')}</span>
                   </div>
                 )}
               </Button>

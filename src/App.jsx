@@ -12,6 +12,9 @@ import CompanyFoundingsPageIntegrated from './components/CompanyFoundingsPageInt
 import ManagementChangesPageIntegrated from './components/ManagementChangesPageIntegrated';
 import APIDocumentation from './components/APIDocumentation';
 
+// Language Context
+import { LanguageProvider } from './contexts/LanguageContext';
+
 // Data
 import werkstattDataRaw from './assets/werkstatt-data.json';
 
@@ -22,6 +25,7 @@ function App() {
   const [apiUsage, setApiUsage] = useState(0);
   const [apiLimit, setApiLimit] = useState(null);
   const [apiValidTo, setApiValidTo] = useState(null);
+  const [userLanguage, setUserLanguage] = useState('en'); // Default to English
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     city: '',
@@ -184,11 +188,12 @@ function App() {
         
         // Set API data if available
         if (data.apiKey) {
-          setApiKey(data.apiKey);
-          setApiUsage(data.apiUsage || 0);
-          setApiLimit(data.apiLimit);
-          setApiValidTo(data.apiValidTo);
-        }
+             setApiKey(data.apiKey);
+             setApiUsage(data.apiUsage || 0);
+             setApiLimit(data.apiLimit);
+             setApiValidTo(data.apiValidTo);
+             setUserLanguage(data.userLanguage || 'en');
+           }
         
         // Initialize GA4 user properties and user_id early in the session
         try {
@@ -221,6 +226,13 @@ function App() {
       try {
         const me = await (await fetch('/api/me', { credentials: 'include' })).json();
         setTenantName(me?.tenantName || '');
+        if (me?.apiKey) {
+          setApiKey(me.apiKey);
+          setApiUsage(me.apiUsage || 0);
+          setApiLimit(me.apiLimit);
+          setApiValidTo(me.apiValidTo);
+          setUserLanguage(me.userLanguage || 'en');
+        }
         if (window.gtag) {
           window.gtag('set', 'user_properties', { tenant: me?.tenantName || user });
           window.gtag('config', 'G-ZCG0Z3F5RE', { user_id: user });
@@ -239,20 +251,23 @@ function App() {
 
   if (!isAuthenticated) {
     return (
-      <Router>
-        <Routes>
-          <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-          <Route path="/" element={<LandingPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
+      <LanguageProvider initialLanguage={userLanguage}>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Router>
+      </LanguageProvider>
     );
   }
 
   return (
-    <Router>
-      <div className="min-h-screen bg-background">
-        <HeaderIntegrated 
+    <LanguageProvider initialLanguage={userLanguage}>
+      <Router>
+        <div className="min-h-screen bg-background">
+          <HeaderIntegrated 
           onLogout={handleLogout}
           allData={werkstattData}
           tenantName={tenantName}
@@ -300,7 +315,8 @@ function App() {
           </Routes>
         </main>
       </div>
-    </Router>
+      </Router>
+    </LanguageProvider>
   );
 }
 
