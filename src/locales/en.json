@@ -238,7 +238,12 @@
     "searchFoundingsParam": "Search by company name or city",
     "getManagementChanges": "GET /management-changes",
     "getManagementChangesDesc": "Retrieves data on management changes.",
-    "searchManagementParam": "Search by company or manager name"
+    "searchManagementParam": "Search by company or manager name",
+    "authDesc": "All API requests must be authenticated with your API key. Pass the key in the X-API-Key header:",
+    "workshopsListDesc": "Retrieves a list of workshops. Supports filtering and pagination.",
+    "workshopByIdDesc": "Retrieves details of a single workshop.",
+    "foundingsDesc": "Retrieves data on company foundings.",
+    "managementChangesDesc": "Retrieves data on management changes."
   },
   "footer": {
     "importantNotice": "Important Notice About the Data",

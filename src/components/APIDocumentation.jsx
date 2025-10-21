@@ -240,32 +240,30 @@ print(data)`
         <CardContent>
           <Tabs defaultValue="overview">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview">Übersicht</TabsTrigger>
-              <TabsTrigger value="workshops">Werkstätten</TabsTrigger>
-              <TabsTrigger value="foundings">Gründungen</TabsTrigger>
-              <TabsTrigger value="management">Management</TabsTrigger>
+              <TabsTrigger value="overview">{t('api.overview')}</TabsTrigger>
+              <TabsTrigger value="workshops">{t('api.workshops')}</TabsTrigger>
+              <TabsTrigger value="foundings">{t('api.foundings')}</TabsTrigger>
+              <TabsTrigger value="management">{t('api.management')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6 mt-6">
               <div className="prose max-w-none space-y-6">
-                <h3 className="text-xl font-bold mt-0">Willkommen zur API</h3>
+                <h3 className="text-xl font-bold mt-0">{t('api.welcome')}</h3>
                 <p>
-                  Diese API ermöglicht Ihnen den programmatischen Zugriff auf Werkstattdaten,
-                  Unternehmensgründungen und Management-Änderungen.
+                  {t('api.welcomeText')}
                 </p>
 
                 <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-2">Base URL</h4>
+                  <h4 className="text-lg font-semibold mb-2">{t('api.baseUrl')}</h4>
                   <code className="block bg-gray-100 p-3 rounded">
                     https://data-sample.auteon.net/api/v1
                   </code>
                 </div>
 
                 <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-2">Authentifizierung</h4>
+                  <h4 className="text-lg font-semibold mb-2">{t('api.authentication')}</h4>
                 <p>
-                  Alle API-Anfragen müssen mit Ihrem API-Key authentifiziert werden.
-                  Übergeben Sie den Key im <code>X-API-Key</code> Header:
+                  {t('api.authText')}
                 </p>
                   <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-3">
                     <code>X-API-Key: {apiKey || 'YOUR_API_KEY'}</code>
@@ -307,22 +305,22 @@ print(data)`
             <TabsContent value="workshops" className="space-y-6 mt-6">
               <div className="space-y-8">
                 <div>
-                  <h3 className="text-xl font-bold mb-3">GET /workshops</h3>
+                  <h3 className="text-xl font-bold mb-3">{t('api.getWorkshops')}</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    Ruft eine Liste von Werkstätten ab. Unterstützt Filterung und Paginierung.
+                    {t('api.getWorkshopsDesc')}
                   </p>
 
-                  <h4 className="font-semibold mb-3 mt-4">Query Parameter</h4>
+                  <h4 className="font-semibold mb-3 mt-4">{t('api.queryParams')}</h4>
                   <div className="space-y-2 text-sm bg-gray-50 p-4 rounded">
-                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">search</code> <span className="text-gray-600">Suche nach Name, Stadt oder PLZ</span></div>
-                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">city</code> <span className="text-gray-600">Filter nach Stadt</span></div>
-                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">zipCode</code> <span className="text-gray-600">Filter nach PLZ</span></div>
-                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">concept</code> <span className="text-gray-600">Filter nach Konzept</span></div>
-                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">limit</code> <span className="text-gray-600">Max. Anzahl Ergebnisse (default: 100, max: 1000)</span></div>
-                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">offset</code> <span className="text-gray-600">Offset für Paginierung (default: 0)</span></div>
+                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">search</code> <span className="text-gray-600">{t('api.searchParam')}</span></div>
+                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">city</code> <span className="text-gray-600">{t('api.cityParam')}</span></div>
+                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">zipCode</code> <span className="text-gray-600">{t('api.zipCodeParam')}</span></div>
+                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">concept</code> <span className="text-gray-600">{t('api.conceptParam')}</span></div>
+                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">limit</code> <span className="text-gray-600">{t('api.limitParam')}</span></div>
+                    <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">offset</code> <span className="text-gray-600">{t('api.offsetParam')}</span></div>
                   </div>
 
-                  <h4 className="font-semibold mt-6 mb-3">Beispiel</h4>
+                  <h4 className="font-semibold mt-6 mb-3">{t('api.example')}</h4>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-xs">
                     <code>{codeExamples.curl.workshopsFiltered}</code>
                   </pre>
@@ -333,7 +331,7 @@ print(data)`
                     onClick={() => copyToClipboard(codeExamples.curl.workshopsFiltered)}
                   >
                     {copied ? <CheckCircle className="h-3 w-3 mr-1" /> : <Copy className="h-3 w-3 mr-1" />}
-                    Kopieren
+                    {t('api.copyCode')}
                   </Button>
                 </div>
 

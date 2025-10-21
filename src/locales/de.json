@@ -238,7 +238,12 @@
     "searchFoundingsParam": "Suche nach Firmenname oder Stadt",
     "getManagementChanges": "GET /management-changes",
     "getManagementChangesDesc": "Ruft Daten zu Management-Änderungen ab.",
-    "searchManagementParam": "Suche nach Firmen- oder Geschäftsführername"
+    "searchManagementParam": "Suche nach Firmen- oder Geschäftsführername",
+    "authDesc": "Alle API-Anfragen müssen mit Ihrem API-Schlüssel authentifiziert werden. Übergeben Sie den Schlüssel im X-API-Key Header:",
+    "workshopsListDesc": "Ruft eine Liste von Werkstätten ab. Unterstützt Filterung und Paginierung.",
+    "workshopByIdDesc": "Ruft Details zu einer einzelnen Werkstatt ab.",
+    "foundingsDesc": "Ruft Daten zu Unternehmensgründungen ab.",
+    "managementChangesDesc": "Ruft Daten zu Management-Änderungen ab."
   },
   "footer": {
     "importantNotice": "Wichtiger Hinweis zu den Daten",
