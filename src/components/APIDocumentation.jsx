@@ -164,7 +164,7 @@ print(data)`
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                Sie haben Ihr API-Limit von {apiLimit.toLocaleString()} Datensätzen erreicht.
+                {t('api.limitReachedMsg')}
               </AlertDescription>
             </Alert>
           )}
@@ -173,7 +173,7 @@ print(data)`
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Verbrauch</span>
+                <span className="text-sm text-gray-600">{t('api.usage')}</span>
                 <TrendingUp className="h-4 w-4 text-gray-400" />
               </div>
               <p className={`text-2xl font-bold ${getUsageColor()}`}>
@@ -200,28 +200,28 @@ print(data)`
 
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Limit</span>
+                <span className="text-sm text-gray-600">{t('api.limit')}</span>
                 <Shield className="h-4 w-4 text-gray-400" />
               </div>
               <p className="text-2xl font-bold text-gray-900">
-                {apiLimit ? apiLimit.toLocaleString() : 'Unbegrenzt'}
+                {apiLimit ? apiLimit.toLocaleString() : t('api.unlimited')}
               </p>
               <p className="text-sm text-gray-500 mt-1">
-                Datensätze
+                {t('api.datasets')}
               </p>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Gültig bis</span>
+                <span className="text-sm text-gray-600">{t('api.validUntil')}</span>
                 <Calendar className="h-4 w-4 text-gray-400" />
               </div>
               <p className="text-2xl font-bold text-gray-900">
-                {apiValidTo ? new Date(apiValidTo).toLocaleDateString('de-DE') : 'Unbegrenzt'}
+                {apiValidTo ? new Date(apiValidTo).toLocaleDateString('de-DE') : t('api.unlimited')}
               </p>
               {apiValidTo && (
                 <p className="text-sm text-gray-500 mt-1">
-                  {Math.ceil((new Date(apiValidTo) - new Date()) / (1000 * 60 * 60 * 24))} Tage
+                  {Math.ceil((new Date(apiValidTo) - new Date()) / (1000 * 60 * 60 * 24))} {t('common.days')}
                 </p>
               )}
             </div>
@@ -273,11 +273,11 @@ print(data)`
                 </div>
 
                 <div className="mt-6">
-                  <h4 className="text-lg font-semibold mb-2">Rate Limits</h4>
+                  <h4 className="text-lg font-semibold mb-2">{t('api.rateLimits')}</h4>
                   <ul className="space-y-2">
-                    <li>Ihr aktuelles Limit: <strong>{apiLimit ? apiLimit.toLocaleString() : 'Unbegrenzt'}</strong> Datensätze</li>
-                    <li>Bereits verbraucht: <strong>{(apiUsage || 0).toLocaleString()}</strong> Datensätze</li>
-                    <li>Verbleibend: <strong>{apiLimit ? (apiLimit - (apiUsage || 0)).toLocaleString() : 'Unbegrenzt'}</strong> Datensätze</li>
+                    <li>{t('api.yourLimit')}: <strong>{apiLimit ? apiLimit.toLocaleString() : t('api.unlimited')}</strong> {t('api.datasets')}</li>
+                    <li>{t('api.alreadyUsed')}: <strong>{(apiUsage || 0).toLocaleString()}</strong> {t('api.datasets')}</li>
+                    <li>{t('api.remainingDatasets')}: <strong>{apiLimit ? (apiLimit - (apiUsage || 0)).toLocaleString() : t('api.unlimited')}</strong> {t('api.datasets')}</li>
                   </ul>
                 </div>
 
