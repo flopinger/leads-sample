@@ -1229,7 +1229,7 @@ const DetailPageComprehensive = () => {
                   </CardTitle>
                     {/* Current Status via openingHours util */}
                   {(() => {
-                    const { status, message } = getOpeningStatus(workingHours);
+                    const { status, message } = getOpeningStatus(workingHours, t);
                     if (status === 'open' || status === 'closing-soon') {
                       return (
                         <div className="flex items-center bg-green-50 border border-green-200 rounded-lg px-3 py-2">
@@ -1648,7 +1648,7 @@ const DetailPageComprehensive = () => {
                       }}
                     >
                       <MapPin className="w-4 h-4 mr-2" />
-                      Route planen
+                      {t('detailPage.planRoute')}
                     </Button>
                         </div>
                     </div>
@@ -1661,7 +1661,7 @@ const DetailPageComprehensive = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Camera className="w-5 h-5 text-[#005787] mr-2" />
-                    Foto der Werkstatt
+                    {t('detailPage.workshopPhoto')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>

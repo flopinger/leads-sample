@@ -17,9 +17,26 @@ export const parseOpeningHours = (hoursString) => {
   return ranges;
 };
 
-export const getOpeningStatus = (workingHours) => {
+export const getOpeningStatus = (workingHours, t = null) => {
+  // Default translation function if none provided
+  const translate = t || ((key) => {
+    const fallback = {
+      'detailPage.openingHoursNotAvailable': 'Öffnungszeiten nicht verfügbar',
+      'detailPage.openingHoursForTodayNotAvailable': 'Öffnungszeiten für heute nicht verfügbar',
+      'detailPage.closedToday': 'Heute geschlossen',
+      'detailPage.closesIn': 'Schließt in',
+      'detailPage.minute': 'Minute',
+      'detailPage.minutes': 'Minuten',
+      'detailPage.openUntil': 'Geöffnet bis',
+      'detailPage.opensIn': 'Öffnet in',
+      'detailPage.closedLabel': 'Geschlossen',
+      'detailPage.opensAt': 'Öffnet um'
+    };
+    return fallback[key] || key;
+  });
+
   if (!workingHours) {
-    return { status: 'unknown', message: 'Öffnungszeiten nicht verfügbar' };
+    return { status: 'unknown', message: translate('detailPage.openingHoursNotAvailable') };
   }
 
   const now = new Date();
@@ -51,12 +68,12 @@ export const getOpeningStatus = (workingHours) => {
   }
 
   if (!todayHours) {
-    return { status: 'unknown', message: 'Öffnungszeiten für heute nicht verfügbar' };
+    return { status: 'unknown', message: translate('detailPage.openingHoursForTodayNotAvailable') };
   }
 
   const parsedRanges = parseOpeningHours(todayHours);
   if (!parsedRanges || parsedRanges.length === 0) {
-    return { status: 'closed', message: 'Heute geschlossen' };
+    return { status: 'closed', message: translate('detailPage.closedToday') };
   }
   // Convert ranges to minutes
   const rangesInMinutes = parsedRanges.map(r => ({
@@ -69,9 +86,11 @@ export const getOpeningStatus = (workingHours) => {
     if (currentTime >= r.open && currentTime < r.close) {
       const timeUntilClose = r.close - currentTime;
       if (timeUntilClose <= 60) {
-        return { status: 'closing-soon', message: `Schließt in ${timeUntilClose} Minute${timeUntilClose !== 1 ? 'n' : ''}` };
+        const minuteLabel = timeUntilClose !== 1 ? translate('detailPage.minutes') : translate('detailPage.minute');
+        return { status: 'closing-soon', message: `${translate('detailPage.closesIn')} ${timeUntilClose} ${minuteLabel}` };
       }
-      return { status: 'open', message: `Geöffnet bis ${String(Math.floor(r.close/60)).padStart(2,'0')}:${String(r.close%60).padStart(2,'0')}` };
+      const closeTime = `${String(Math.floor(r.close/60)).padStart(2,'0')}:${String(r.close%60).padStart(2,'0')}`;
+      return { status: 'open', message: `${translate('detailPage.openUntil')} ${closeTime}` };
     }
   }
 
@@ -80,13 +99,15 @@ export const getOpeningStatus = (workingHours) => {
   if (next) {
     const inMinutes = next.open - currentTime;
     if (inMinutes <= 60) {
-      return { status: 'opening-soon', message: `Öffnet in ${inMinutes} Minute${inMinutes !== 1 ? 'n' : ''}` };
+      const minuteLabel = inMinutes !== 1 ? translate('detailPage.minutes') : translate('detailPage.minute');
+      return { status: 'opening-soon', message: `${translate('detailPage.opensIn')} ${inMinutes} ${minuteLabel}` };
     }
-    return { status: 'closed', message: `Geschlossen - Öffnet um ${String(Math.floor(next.open/60)).padStart(2,'0')}:${String(next.open%60).padStart(2,'0')}` };
+    const openTime = `${String(Math.floor(next.open/60)).padStart(2,'0')}:${String(next.open%60).padStart(2,'0')}`;
+    return { status: 'closed', message: `${translate('detailPage.closedLabel')} - ${translate('detailPage.opensAt')} ${openTime}` };
   }
 
   // No more openings today
-  return { status: 'closed', message: 'Heute geschlossen' };
+  return { status: 'closed', message: translate('detailPage.closedToday') };
 };
 
 export const getStatusColor = (status) => {
