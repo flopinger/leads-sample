@@ -18,8 +18,10 @@ import GoogleMapComponent from './GoogleMapComponent';
 import { filterEmails, filterEmailsFromArray } from '../utils/emailFilter';
 import { convertToCSV } from '../utils/dataUtils';
 import { DATA_LAST_UPDATED } from '../utils/constants';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilters, tenantName = '' }) => {
+  const { t } = useLanguage();
   const [showAllEntries, setShowAllEntries] = useState(false);
 
   // Translation function for classifications
@@ -273,7 +275,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <h1 className="text-2xl font-bold heading-contrast">
-                Werkstattadressen-Sample {tenantName ? <span>{tenantName}</span> : null}
+                {t('dashboard.title')} {tenantName ? <span>{tenantName}</span> : null}
               </h1>
             </div>
             {/* Stand Callout and Export */}
@@ -281,7 +283,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                 <Badge variant="outline" className={`${badgeStyles.callout} text-sm px-3 py-1`}>
                   <Calendar className="w-3 h-3 mr-1" />
-                  <span id="stand-date">Stand: {DATA_LAST_UPDATED}</span>
+                  <span id="stand-date">{t('common.dataAsOf')}: {DATA_LAST_UPDATED}</span>
                 </Badge>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
@@ -292,24 +294,24 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                       size="sm"
                     >
                       <Download className="mr-2 h-4 w-4" />
-                      Export ({filteredData.length})
+                      {t('common.export')} ({filteredData.length})
                       <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={exportJSONData}>
                       <Download className="h-4 w-4 mr-2" />
-                      JSON
+                      {t('dashboard.json')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={exportCSVData}>
                       <Download className="h-4 w-4 mr-2" />
-                      CSV
+                      {t('dashboard.csv')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <Link to="/api-docs">
                       <DropdownMenuItem>
                         <Code className="h-4 w-4 mr-2" />
-                        API
+                        {t('dashboard.api')}
                       </DropdownMenuItem>
                     </Link>
                   </DropdownMenuContent>
@@ -337,7 +339,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
               <CardContent>
                 <div className="relative">
                   <Input
-                    placeholder="Suchen nach Name, Stadt, PLZ oder Klassifikation....."
+                    placeholder={t('dashboard.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pr-10"
@@ -356,7 +358,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-3xl font-bold heading-contrast">{filteredData.length}</p>
-                      <p className="text-sm text-gray-600 mt-1">Werkstätten</p>
+                      <p className="text-sm text-gray-600 mt-1">{t('dashboard.totalWorkshops')}</p>
                     </div>
                     <div className="brand-tint-10 p-3 rounded-lg">
                       <Building className="h-6 w-6 brand-text" />
