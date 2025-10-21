@@ -1,5 +1,23 @@
 export const config = { runtime: 'nodejs' };
 import { getSupabaseAdmin } from '../_supabase.js';
+import fs from 'fs';
+import path from 'path';
+
+// Load workshop data from JSON file
+let workshopsData = null;
+function loadWorkshopsData() {
+  if (!workshopsData) {
+    try {
+      const filePath = path.join(process.cwd(), 'public', 'werkstatt-adressen-filtered-750.json');
+      const fileContent = fs.readFileSync(filePath, 'utf-8');
+      workshopsData = JSON.parse(fileContent);
+    } catch (error) {
+      console.error('Error loading workshops data:', error);
+      workshopsData = [];
+    }
+  }
+  return workshopsData;
+}
 
 // API Key authentication middleware
 async function authenticateApiKey(req) {
@@ -55,6 +73,28 @@ async function incrementUsage(apiKey, count) {
   }
 }
 
+// Helper to extract concepts from relationships
+function extractConcepts(workshop) {
+  const concepts = [];
+  
+  if (workshop.relationships && Array.isArray(workshop.relationships)) {
+    for (const rel of workshop.relationships) {
+      if (rel.handle === 'AUTOCREW') {
+        try {
+          const data = typeof rel.source_data === 'string' ? JSON.parse(rel.source_data) : rel.source_data;
+          if (data.concept) {
+            concepts.push(data.concept);
+          }
+        } catch (e) {
+          // Ignore parse errors
+        }
+      }
+    }
+  }
+  
+  return concepts;
+}
+
 export default async function handler(req, res) {
   // Only allow GET
   if (req.method !== 'GET') {
@@ -67,63 +107,71 @@ export default async function handler(req, res) {
     return res.status(auth.status).json({ error: auth.error });
   }
 
-  const supabase = getSupabaseAdmin();
   const { search, city, zipCode, concept, limit = 100, offset = 0 } = req.query;
 
   try {
-    // Build query
-    let query = supabase
-      .from('workshops')
-      .select('*', { count: 'exact' });
-
+    // Load workshops from JSON
+    const allWorkshops = loadWorkshopsData();
+    
     // Apply filters
+    let filtered = allWorkshops;
+    
     if (search) {
-      query = query.or(`name.ilike.%${search}%,city.ilike.%${search}%,zip_code.ilike.%${search}%`);
+      const searchLower = search.toLowerCase();
+      filtered = filtered.filter(w => 
+        w.name?.toLowerCase().includes(searchLower) ||
+        w.city?.toLowerCase().includes(searchLower) ||
+        w.zip_code?.toLowerCase().includes(searchLower)
+      );
     }
+    
     if (city) {
-      query = query.eq('city', city);
+      filtered = filtered.filter(w => w.city === city);
     }
+    
     if (zipCode) {
-      query = query.eq('zip_code', zipCode);
+      filtered = filtered.filter(w => w.zip_code === zipCode);
     }
+    
     if (concept) {
-      // Try both possible column names for concepts
-      query = query.or(`concepts_networks.cs.{${concept}},concepts.cs.{${concept}}`);
+      filtered = filtered.filter(w => {
+        const concepts = extractConcepts(w);
+        return concepts.some(c => c.includes(concept));
+      });
     }
 
     // Apply pagination
     const limitNum = Math.min(parseInt(limit) || 100, 1000);
     const offsetNum = parseInt(offset) || 0;
-    query = query.range(offsetNum, offsetNum + limitNum - 1);
-
-    const { data: workshops, error, count } = await query;
-
-    if (error) {
-      console.error('Database error:', error);
-      console.error('Query details:', { search, city, zipCode, concept, limit, offset });
-      return res.status(500).json({ 
-        error: 'Database error',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
-      });
-    }
+    const total = filtered.length;
+    const paginated = filtered.slice(offsetNum, offsetNum + limitNum);
 
     // Increment usage
     const apiKey = req.headers['x-api-key'];
-    await incrementUsage(apiKey, workshops.length);
+    await incrementUsage(apiKey, paginated.length);
 
     // Return response
     return res.json({
       metadata: {
-        total: count,
-        returned: workshops.length,
+        total: total,
+        returned: paginated.length,
         offset: offsetNum,
-        limit: limitNum
+        limit: limitNum,
+        filters: {
+          search: search || null,
+          city: city || null,
+          zipCode: zipCode || null,
+          concept: concept || null
+        }
       },
-      data: workshops
+      data: paginated
     });
   } catch (error) {
     console.error('API error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }
 

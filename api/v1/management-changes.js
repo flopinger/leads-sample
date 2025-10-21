@@ -1,6 +1,25 @@
 export const config = { runtime: 'nodejs' };
 import { getSupabaseAdmin } from '../_supabase.js';
+import fs from 'fs';
+import path from 'path';
 
+// Load management changes data from JSON file
+let managementData = null;
+function loadManagementData() {
+  if (!managementData) {
+    try {
+      const filePath = path.join(process.cwd(), 'public', 'management-changes.json');
+      const fileContent = fs.readFileSync(filePath, 'utf-8');
+      managementData = JSON.parse(fileContent);
+    } catch (error) {
+      console.error('Error loading management changes data:', error);
+      managementData = [];
+    }
+  }
+  return managementData;
+}
+
+// API Key authentication
 async function authenticateApiKey(req) {
   const apiKey = req.headers['x-api-key'];
   if (!apiKey) {
@@ -60,51 +79,61 @@ export default async function handler(req, res) {
     return res.status(auth.status).json({ error: auth.error });
   }
 
-  const supabase = getSupabaseAdmin();
   const { search, dateFrom, dateTo, limit = 100, offset = 0 } = req.query;
 
   try {
-    let query = supabase
-      .from('events')
-      .select('*, workshop:workshops(*)', { count: 'exact' })
-      .eq('event_type', 'management_change');
-
+    // Load management changes from JSON
+    const allChanges = loadManagementData();
+    
+    // Apply filters
+    let filtered = allChanges;
+    
     if (search) {
-      query = query.or(`company_name.ilike.%${search}%,city.ilike.%${search}%,manager_name.ilike.%${search}%`);
+      const searchLower = search.toLowerCase();
+      filtered = filtered.filter(c => 
+        c.company_name?.toLowerCase().includes(searchLower) ||
+        c.city?.toLowerCase().includes(searchLower) ||
+        c.manager_name?.toLowerCase().includes(searchLower)
+      );
     }
+    
     if (dateFrom) {
-      query = query.gte('event_date', dateFrom);
+      filtered = filtered.filter(c => c.change_date >= dateFrom);
     }
+    
     if (dateTo) {
-      query = query.lte('event_date', dateTo);
+      filtered = filtered.filter(c => c.change_date <= dateTo);
     }
 
+    // Apply pagination
     const limitNum = Math.min(parseInt(limit) || 100, 1000);
     const offsetNum = parseInt(offset) || 0;
-    query = query.range(offsetNum, offsetNum + limitNum - 1);
+    const total = filtered.length;
+    const paginated = filtered.slice(offsetNum, offsetNum + limitNum);
 
-    const { data: events, error, count } = await query;
-
-    if (error) {
-      console.error('Database error:', error);
-      return res.status(500).json({ error: 'Database error' });
-    }
-
+    // Increment usage
     const apiKey = req.headers['x-api-key'];
-    await incrementUsage(apiKey, events.length);
+    await incrementUsage(apiKey, paginated.length);
 
     return res.json({
       metadata: {
-        total: count,
-        returned: events.length,
+        total: total,
+        returned: paginated.length,
         offset: offsetNum,
-        limit: limitNum
+        limit: limitNum,
+        filters: {
+          search: search || null,
+          dateFrom: dateFrom || null,
+          dateTo: dateTo || null
+        }
       },
-      data: events
+      data: paginated
     });
   } catch (error) {
     console.error('API error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }
-
