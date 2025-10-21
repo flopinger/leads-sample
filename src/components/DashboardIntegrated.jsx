@@ -333,7 +333,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
               <CardHeader>
                 <CardTitle className="flex items-center text-gray-900">
                   <Search className="mr-2 h-5 w-5 brand-text" />
-                  Suche
+                  {t('common.search')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -373,7 +373,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-3xl font-bold heading-contrast">{uniqueCities}</p>
-                      <p className="text-sm text-gray-600 mt-1">Städte</p>
+                      <p className="text-sm text-gray-600 mt-1">{t('dashboard.city')}</p>
                     </div>
                     <div className="brand-tint-10 p-3 rounded-lg">
                       <MapPin className="h-6 w-6 brand-text" />
@@ -388,9 +388,9 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="text-2xl font-bold heading-contrast">{totalWithPhone}</p>
-                      <p className="text-xs text-gray-600 mt-1">Telefonnummern</p>
+                      <p className="text-xs text-gray-600 mt-1">{t('dashboard.phone')}</p>
                       <p className="text-xs text-gray-500 mt-1">
-                        {Math.round((totalWithPhone / filteredData.length) * 100)}% Abdeckung
+                        {Math.round((totalWithPhone / filteredData.length) * 100)}% {t('dashboard.results')}
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -425,9 +425,9 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="text-2xl font-bold heading-contrast">{totalWithEmail}</p>
-                      <p className="text-xs text-gray-600 mt-1">E-Mail-Adressen</p>
+                      <p className="text-xs text-gray-600 mt-1">{t('dashboard.email')}</p>
                       <p className="text-xs text-gray-500 mt-1">
-                        {Math.round((totalWithEmail / filteredData.length) * 100)}% Abdeckung
+                        {Math.round((totalWithEmail / filteredData.length) * 100)}% {t('dashboard.results')}
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -462,9 +462,9 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="text-2xl font-bold heading-contrast">{totalWithWebsite}</p>
-                      <p className="text-xs text-gray-600 mt-1">Webseiten</p>
+                      <p className="text-xs text-gray-600 mt-1">{t('dashboard.website')}</p>
                       <p className="text-xs text-gray-500 mt-1">
-                        {Math.round((totalWithWebsite / filteredData.length) * 100)}% Abdeckung
+                        {Math.round((totalWithWebsite / filteredData.length) * 100)}% {t('dashboard.results')}
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">

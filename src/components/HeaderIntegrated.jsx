@@ -140,6 +140,9 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
             </Link>
           </nav>
 
+          {/* Language Switcher */}
+          <LanguageSwitcher variant="ghost" size="sm" showLabel={false} />
+          
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -149,7 +152,6 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
                 className="text-white hover:bg-white/10"
               >
                 <User className="h-5 w-5" />
-                <span className="hidden sm:inline ml-2">{tenantName}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48 z-[70]">
@@ -166,9 +168,6 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          
-          {/* Language Switcher */}
-          <LanguageSwitcher variant="ghost" size="sm" />
         </div>
       </div>
     </header>
