@@ -470,3 +470,86 @@ export const truncateText = (text, maxLength = 100) => {
   if (!text || text.length <= maxLength) return text;
   return text.substring(0, maxLength) + '...';
 };
+
+// Convert JSON data to CSV format with flattened structure
+export const convertToCSV = (data) => {
+  if (!data || data.length === 0) return '';
+  
+  // Function to flatten nested objects
+  const flattenObject = (obj, prefix = '') => {
+    const flattened = {};
+    
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const newKey = prefix ? `${prefix}_${key}` : key;
+        const value = obj[key];
+        
+        if (value === null || value === undefined) {
+          flattened[newKey] = '';
+        } else if (Array.isArray(value)) {
+          // Handle arrays - convert to comma-separated string or create multiple columns
+          if (value.length === 0) {
+            flattened[newKey] = '';
+          } else if (typeof value[0] === 'object') {
+            // Array of objects - flatten each object with index
+            value.forEach((item, index) => {
+              const nestedFlattened = flattenObject(item, `${newKey}_${index + 1}`);
+              Object.assign(flattened, nestedFlattened);
+            });
+          } else {
+            // Array of primitives - join with semicolon
+            flattened[newKey] = value.join('; ');
+          }
+        } else if (typeof value === 'object') {
+          // Nested object - recursively flatten
+          const nestedFlattened = flattenObject(value, newKey);
+          Object.assign(flattened, nestedFlattened);
+        } else {
+          // Primitive value
+          flattened[newKey] = value;
+        }
+      }
+    }
+    
+    return flattened;
+  };
+  
+  // Flatten all objects
+  const flattenedData = data.map(item => flattenObject(item));
+  
+  // Get all unique keys from all objects
+  const allKeys = new Set();
+  flattenedData.forEach(item => {
+    Object.keys(item).forEach(key => allKeys.add(key));
+  });
+  
+  const headers = Array.from(allKeys).sort();
+  
+  // Create CSV content
+  const csvRows = [];
+  
+  // Add headers
+  csvRows.push(headers.map(header => `"${header}"`).join(','));
+  
+  // Add data rows
+  flattenedData.forEach(item => {
+    const row = headers.map(header => {
+      const value = item[header] || '';
+      // Escape quotes and wrap in quotes
+      const escapedValue = String(value).replace(/"/g, '""');
+      return `"${escapedValue}"`;
+    });
+    csvRows.push(row.join(','));
+  });
+  
+  return csvRows.join('\n');
+};
+
+// Create CSV export data with same cleaning as JSON export
+export const createCSVExportData = (data) => {
+  // Use the same cleaning logic as createExportData
+  const cleanedData = createExportData(data);
+  
+  // Convert to CSV
+  return convertToCSV(cleanedData);
+};

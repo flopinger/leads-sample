@@ -3,9 +3,17 @@ import { useParams, Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger 
+} from './ui/dropdown-menu';
 import { getOpeningStatus } from '../utils/openingHours';
 import auteonLogo from '../assets/auteon-logo.jpg';
 import { filterEmails, filterEmailsFromArray, shouldFilterEmail } from '../utils/emailFilter';
+import { convertToCSV } from '../utils/dataUtils';
 import { 
   MapPin, 
   Phone, 
@@ -28,7 +36,9 @@ import {
   CreditCard,
   Tag,
   Database,
-  Download
+  Download,
+  ChevronDown,
+  Code
 } from 'lucide-react';
 
 const DetailPageComprehensive = () => {
@@ -45,8 +55,8 @@ const DetailPageComprehensive = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Export function for current workshop
-  const exportCurrentWorkshop = () => {
+  // Export function for current workshop as JSON
+  const exportCurrentWorkshopJSON = () => {
     if (!workshop) return;
     
     // Create export metadata
@@ -73,6 +83,28 @@ const DetailPageComprehensive = () => {
     const a = document.createElement('a');
     a.href = url;
     a.download = `werkstatt_${workshop.id}_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  // Export function for current workshop as CSV
+  const exportCurrentWorkshopCSV = () => {
+    if (!workshop) return;
+    
+    // Create CSV data with cleaned workshop
+    const cleanedWorkshop = cleanDataForExport(workshop);
+    
+    // Convert to CSV format
+    const csvData = convertToCSV([cleanedWorkshop]);
+    
+    // Create and download CSV file
+    const blob = new Blob([csvData], { 
+      type: 'text/csv;charset=utf-8;' 
+    });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `werkstatt_${workshop.id}_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -851,14 +883,35 @@ const DetailPageComprehensive = () => {
               </div>
               {/* Export Button */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <Button 
-                  onClick={exportCurrentWorkshop}
-                  className="action-bg action-bg-hover text-white"
-                  size="sm"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  JSON Export
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      className="action-bg action-bg-hover text-white"
+                      size="sm"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Export
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={exportCurrentWorkshopJSON}>
+                      <Download className="h-4 w-4 mr-2" />
+                      JSON
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={exportCurrentWorkshopCSV}>
+                      <Download className="h-4 w-4 mr-2" />
+                      CSV
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <Link to="/api-docs">
+                      <DropdownMenuItem>
+                        <Code className="h-4 w-4 mr-2" />
+                        API
+                      </DropdownMenuItem>
+                    </Link>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>

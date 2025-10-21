@@ -4,7 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Filter, X, Users, MapPin, Calendar, ExternalLink, TrendingUp, Download } from 'lucide-react';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { Search, Filter, X, Users, MapPin, Calendar, ExternalLink, TrendingUp, Download, ChevronDown, Code } from 'lucide-react';
 import auteonLogo from '../assets/auteon-logo.jpg';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -12,6 +19,7 @@ import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { filterEmails, filterEmailsFromArray } from '../utils/emailFilter';
+import { convertToCSV } from '../utils/dataUtils';
 
 const ManagementChangesPageIntegrated = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -188,8 +196,8 @@ const ManagementChangesPageIntegrated = ({ data }) => {
     return cleanedData;
   };
 
-  // Export function for filtered companies
-  const exportFilteredCompanies = () => {
+  // Export function for filtered companies as JSON
+  const exportFilteredCompaniesJSON = () => {
     // Get all unique company IDs from filtered events
     const filteredCompanyIds = new Set(filteredEvents.map(event => event.workshop_id));
     
@@ -231,6 +239,30 @@ const ManagementChangesPageIntegrated = ({ data }) => {
     window.URL.revokeObjectURL(url);
   };
 
+  // Export function for filtered companies as CSV
+  const exportFilteredCompaniesCSV = () => {
+    // Get all unique company IDs from filtered events
+    const filteredCompanyIds = new Set(filteredEvents.map(event => event.workshop_id));
+    
+    // Get all data for these companies and clean them
+    const companiesToExport = data.filter(workshop => filteredCompanyIds.has(workshop.id))
+      .map(workshop => cleanDataForExport(workshop));
+    
+    // Convert to CSV format
+    const csvData = convertToCSV(companiesToExport);
+    
+    // Create and download CSV file
+    const blob = new Blob([csvData], { 
+      type: 'text/csv;charset=utf-8;' 
+    });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `management_aenderungen_gefiltert_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   // Get the most recent date for the data status
   const mostRecentDate = managementEvents.length > 0 ? managementEvents[0].event_date : null;
 
@@ -256,14 +288,35 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                 </Badge>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <Button 
-                  onClick={exportFilteredCompanies}
-                  className="action-bg action-bg-hover text-white"
-                  size="sm"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  JSON Export ({filteredEvents.length > 0 ? new Set(filteredEvents.map(event => event.workshop_id)).size : 0})
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      className="action-bg action-bg-hover text-white"
+                      size="sm"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Export ({filteredEvents.length > 0 ? new Set(filteredEvents.map(event => event.workshop_id)).size : 0})
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={exportFilteredCompaniesJSON}>
+                      <Download className="h-4 w-4 mr-2" />
+                      JSON
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={exportFilteredCompaniesCSV}>
+                      <Download className="h-4 w-4 mr-2" />
+                      CSV
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <Link to="/api-docs">
+                      <DropdownMenuItem>
+                        <Code className="h-4 w-4 mr-2" />
+                        API
+                      </DropdownMenuItem>
+                    </Link>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>

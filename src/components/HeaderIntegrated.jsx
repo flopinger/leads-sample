@@ -3,11 +3,20 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { 
   LogOut, 
   Home,
   Building,
   TrendingUp,
-  Calendar
+  Calendar,
+  Code,
+  User
 } from 'lucide-react';
 // Dynamic, tenant-specific logo is served by backend
 
@@ -128,16 +137,32 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
             </Link>
           </nav>
 
-          {/* Logout */}
-          <Button 
-            onClick={onLogout}
-            variant="ghost"
-            size="sm"
-            className="text-white hover:bg-white/10"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Abmelden</span>
-          </Button>
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="ghost"
+                size="sm"
+                className="text-white hover:bg-white/10"
+              >
+                <User className="h-5 w-5" />
+                <span className="hidden sm:inline ml-2">{tenantName}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 z-[70]">
+              <Link to="/api-docs">
+                <DropdownMenuItem className="cursor-pointer">
+                  <Code className="mr-2 h-4 w-4" />
+                  API-Dokumentation
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={onLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+                <LogOut className="mr-2 h-4 w-4" />
+                Abmelden
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>

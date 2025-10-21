@@ -4,11 +4,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { Search, Filter, X, Users, Phone, Mail, Globe, Download, MapPin, Building } from 'lucide-react';
+import { Search, Filter, X, Users, Phone, Mail, Globe, Download, MapPin, Building, ChevronDown, Code } from 'lucide-react';
 import MapComponent from './MapComponent';
 import auteonLogo from '../assets/auteon-logo.jpg';
-import { processConceptsNetworks, createExportData, PREMIUM_CONCEPTS } from '../utils/dataUtils';
+import { processConceptsNetworks, createExportData, createCSVExportData, PREMIUM_CONCEPTS } from '../utils/dataUtils';
+import { DATA_LAST_UPDATED } from '../utils/constants';
 
 const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
@@ -134,8 +142,8 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
     filters.hasEmail || 
     filters.hasPhone;
 
-  // Export function
-  const handleExport = () => {
+  // Export functions
+  const handleJSONExport = () => {
     const exportData = createExportData(filteredData);
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
       type: 'application/json' 
@@ -144,6 +152,21 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
     const a = document.createElement('a');
     a.href = url;
     a.download = `werkstatt-adressen-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCSVExport = () => {
+    const csvData = createCSVExportData(filteredData);
+    const blob = new Blob([csvData], { 
+      type: 'text/csv;charset=utf-8;' 
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `werkstatt-adressen-${new Date().toISOString().split('T')[0]}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -213,7 +236,7 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
                   <span className="text-sm text-gray-600 font-medium">gesamt</span>
                 </div>
                 <p className="text-xs text-gray-500">
-                  Stand: 10.10.2025
+                  Stand: {DATA_LAST_UPDATED}
                 </p>
               </div>
               <div className="w-12 h-12 bg-[#005787] rounded-lg flex items-center justify-center">
@@ -447,7 +470,7 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
           <div className="flex items-center justify-between">
             <div className="space-y-2">
               <p className="text-sm text-gray-700 font-medium">
-                Exportieren Sie die gefilterten Werkstattdaten als JSON-Datei
+                Exportieren Sie die gefilterten Werkstattdaten
               </p>
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-[#005787] rounded-full"></div>
@@ -456,13 +479,34 @@ const Dashboard = ({ data, searchTerm, setSearchTerm, filters, setFilters }) => 
                 </p>
               </div>
             </div>
-            <Button 
-              onClick={handleExport} 
-              className="ml-4 bg-[#005787] hover:bg-[#004066] text-white shadow-lg hover:shadow-xl transition-all duration-200"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              JSON Export
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  className="ml-4 bg-[#005787] hover:bg-[#004066] text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleJSONExport}>
+                  <Download className="h-4 w-4 mr-2" />
+                  JSON
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleCSVExport}>
+                  <Download className="h-4 w-4 mr-2" />
+                  CSV
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <Link to="/api-docs">
+                  <DropdownMenuItem>
+                    <Code className="h-4 w-4 mr-2" />
+                    API
+                  </DropdownMenuItem>
+                </Link>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </CardContent>
       </Card>

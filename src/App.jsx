@@ -10,6 +10,7 @@ import DetailPageComprehensive from './components/DetailPageComprehensive';
 import HeaderIntegrated from './components/HeaderIntegrated';
 import CompanyFoundingsPageIntegrated from './components/CompanyFoundingsPageIntegrated';
 import ManagementChangesPageIntegrated from './components/ManagementChangesPageIntegrated';
+import APIDocumentation from './components/APIDocumentation';
 
 // Data
 import werkstattDataRaw from './assets/werkstatt-data.json';
@@ -17,6 +18,10 @@ import werkstattDataRaw from './assets/werkstatt-data.json';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [tenantName, setTenantName] = useState('');
+  const [apiKey, setApiKey] = useState('');
+  const [apiUsage, setApiUsage] = useState(0);
+  const [apiLimit, setApiLimit] = useState(null);
+  const [apiValidTo, setApiValidTo] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     city: '',
@@ -166,24 +171,40 @@ function App() {
   }, [latestUpdatedAt, tenantName]);
 
   // Check authentication on app load
-  useEffect(() => {
-    // Check auth via backend
-    fetch('/api/me', { credentials: 'include' })
-      .then(r => (r.ok ? r.json() : null))
-      .then(data => {
-        if (data && data.user) {
-          setIsAuthenticated(true);
-          setTenantName(data.tenantName || '');
-          // Initialize GA4 user properties and user_id early in the session
-          try {
-            if (window.gtag) {
-              window.gtag('set', 'user_properties', { tenant: data.tenantName || data.user });
-              window.gtag('set', { user_id: data.user });
-            }
-          } catch {}
+  // Fetch user info and API data on mount
+  const fetchUserData = async () => {
+    try {
+      const res = await fetch('/api/me', { credentials: 'include' });
+      if (!res.ok) return;
+      
+      const data = await res.json();
+      if (data && data.user) {
+        setIsAuthenticated(true);
+        setTenantName(data.tenantName || '');
+        
+        // Set API data if available
+        if (data.apiKey) {
+          setApiKey(data.apiKey);
+          setApiUsage(data.apiUsage || 0);
+          setApiLimit(data.apiLimit);
+          setApiValidTo(data.apiValidTo);
         }
-      })
-      .catch(() => {});
+        
+        // Initialize GA4 user properties and user_id early in the session
+        try {
+          if (window.gtag) {
+            window.gtag('set', 'user_properties', { tenant: data.tenantName || data.user });
+            window.gtag('set', { user_id: data.user });
+          }
+        } catch {}
+      }
+    } catch (error) {
+      // Not authenticated
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
   }, []);
 
   const handleLogin = async (password, user = 'zf') => {
@@ -263,6 +284,17 @@ function App() {
             <Route 
               path="/management-changes" 
               element={<ManagementChangesPageIntegrated data={werkstattData} />} 
+            />
+            <Route 
+              path="/api-docs" 
+              element={
+                <APIDocumentation 
+                  apiKey={apiKey}
+                  apiUsage={apiUsage}
+                  apiLimit={apiLimit}
+                  apiValidTo={apiValidTo}
+                />
+              } 
             />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

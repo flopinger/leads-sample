@@ -4,11 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { Search, Filter, X, Users, Phone, Mail, Globe, Download, MapPin, Building, Calendar, TrendingUp } from 'lucide-react';
+import { Search, Filter, X, Users, Phone, Mail, Globe, Download, MapPin, Building, Calendar, TrendingUp, ChevronDown, Code } from 'lucide-react';
 import auteonLogo from '../assets/auteon-logo.jpg';
 import GoogleMapComponent from './GoogleMapComponent';
 import { filterEmails, filterEmailsFromArray } from '../utils/emailFilter';
+import { convertToCSV } from '../utils/dataUtils';
+import { DATA_LAST_UPDATED } from '../utils/constants';
 
 const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilters, tenantName = '' }) => {
   const [showAllEntries, setShowAllEntries] = useState(false);
@@ -200,7 +209,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
   };
 
   // Export data as JSON
-  const exportData = () => {
+  const exportJSONData = () => {
     // Create export metadata
     const exportMetadata = {
       exportDate: new Date().toISOString(),
@@ -232,6 +241,26 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
     window.URL.revokeObjectURL(url);
   };
 
+  // Export data as CSV
+  const exportCSVData = () => {
+    // Create CSV data with cleaned workshops
+    const cleanedWorkshops = filteredData.map(workshop => cleanDataForExport(workshop));
+    
+    // Convert to CSV format
+    const csvData = convertToCSV(cleanedWorkshops);
+    
+    // Create and download CSV file
+    const blob = new Blob([csvData], { 
+      type: 'text/csv;charset=utf-8;' 
+    });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `werkstaetten_gefiltert_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   // Sort data alphabetically by name
   const sortedData = [...filteredData].sort((a, b) => a.name.localeCompare(b.name));
   const displayedData = showAllEntries ? sortedData : sortedData.slice(0, 10);
@@ -252,18 +281,39 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                 <Badge variant="outline" className={`${badgeStyles.callout} text-sm px-3 py-1`}>
                   <Calendar className="w-3 h-3 mr-1" />
-                  <span id="stand-date">Stand: {typeof window !== 'undefined' && window.__LATEST_UPDATED_AT__ ? window.__LATEST_UPDATED_AT__ : ''}</span>
+                  <span id="stand-date">Stand: {DATA_LAST_UPDATED}</span>
                 </Badge>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <Button 
-                  onClick={exportData}
-                  className="action-bg action-bg-hover text-white"
-                  size="sm"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  JSON Export ({filteredData.length})
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      className="action-bg action-bg-hover text-white"
+                      size="sm"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Export ({filteredData.length})
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={exportJSONData}>
+                      <Download className="h-4 w-4 mr-2" />
+                      JSON
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={exportCSVData}>
+                      <Download className="h-4 w-4 mr-2" />
+                      CSV
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <Link to="/api-docs">
+                      <DropdownMenuItem>
+                        <Code className="h-4 w-4 mr-2" />
+                        API
+                      </DropdownMenuItem>
+                    </Link>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>
