@@ -31,7 +31,8 @@
   },
   "languages": {
     "en": "Englisch",
-    "de": "Deutsch"
+    "de": "Deutsch",
+    "fr": "Französisch"
   },
   "login": {
     "title": "Anmeldung",

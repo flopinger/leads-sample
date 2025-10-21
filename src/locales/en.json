@@ -31,7 +31,8 @@
   },
   "languages": {
     "en": "English",
-    "de": "German"
+    "de": "German",
+    "fr": "French"
   },
   "login": {
     "title": "Login",

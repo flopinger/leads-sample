@@ -14,7 +14,8 @@ const LanguageSwitcher = ({ variant = 'ghost', size = 'sm', showLabel = false })
 
   const languages = [
     { code: 'en', label: t('languages.en'), flag: '🇬🇧' },
-    { code: 'de', label: t('languages.de'), flag: '🇩🇪' }
+    { code: 'de', label: t('languages.de'), flag: '🇩🇪' },
+    { code: 'fr', label: t('languages.fr'), flag: '🇫🇷' }
   ];
 
   const currentLanguage = languages.find(lang => lang.code === language);
