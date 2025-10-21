@@ -333,7 +333,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <Input
-                  placeholder="Suchen nach Firma, Ort, Geschäftsführer..."
+                  placeholder={t('managementChanges.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pr-10"
@@ -358,7 +358,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                         format(dateRange.from, "dd.MM.yyyy", { locale: de })
                       )
                     ) : (
-                      <span>Zeitraum wählen</span>
+                      <span>{t('foundings.filterByDate')}</span>
                     )}
                   </Button>
                 </PopoverTrigger>
@@ -440,7 +440,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-3xl font-bold text-[#005787]">{recentChanges}</p>
-                  <p className="text-sm text-gray-600 mt-1">Letzte 3 Monate</p>
+                  <p className="text-sm text-gray-600 mt-1">{t('managementChanges.lastThreeMonths')}</p>
                 </div>
                 <div className="brand-tint-10 p-3 rounded-lg">
                   <Calendar className="h-6 w-6 brand-text" />

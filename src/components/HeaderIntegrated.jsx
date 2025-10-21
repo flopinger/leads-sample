@@ -140,20 +140,21 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
             </Link>
           </nav>
 
-          {/* Language Switcher */}
-          <LanguageSwitcher variant="ghost" size="sm" showLabel={false} />
-          
-          {/* User Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost"
-                size="sm"
-                className="text-white hover:bg-white/10"
-              >
-                <User className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
+          <div className="flex items-center gap-2">
+            {/* Language Switcher */}
+            <LanguageSwitcher variant="ghost" size="sm" showLabel={false} />
+            
+            {/* User Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost"
+                  size="sm"
+                  className="text-white hover:bg-white/10"
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48 z-[70]">
               <Link to="/api-docs">
                 <DropdownMenuItem className="cursor-pointer">
@@ -167,7 +168,8 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
                 {t('header.logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
     </header>
