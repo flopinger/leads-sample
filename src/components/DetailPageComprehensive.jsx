@@ -791,7 +791,7 @@ const DetailPageComprehensive = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#005787] mx-auto mb-4"></div>
-          <p className="text-gray-600">Lade Werkstatt-Daten...</p>
+          <p className="text-gray-600">{t('detailPage.loading')}</p>
         </div>
       </div>
     );
@@ -930,7 +930,7 @@ const DetailPageComprehensive = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Phone className="w-5 h-5 text-[#005787] mr-2" />
-                  Kontaktinformationen
+                  {t('detailPage.contactInfo')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -941,7 +941,7 @@ const DetailPageComprehensive = () => {
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
                         <MapPin className="w-4 h-4 mr-2 text-gray-600" />
-                        Adresse
+                        {t('detailPage.address')}
                       </h4>
                       <div className="flex items-center text-gray-600">
                         <MapPin className="w-4 h-4 mr-2" />
@@ -956,7 +956,7 @@ const DetailPageComprehensive = () => {
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
                           <Phone className="w-4 h-4 mr-2 text-gray-600" />
-                          Telefon
+                          {t('detailPage.phone')}
                         </h4>
                         <div className="space-y-2">
                           {getAllPhoneNumbers().map((phone, index) => (
@@ -975,7 +975,7 @@ const DetailPageComprehensive = () => {
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
                           <Mail className="w-4 h-4 mr-2 text-gray-600" />
-                          E-Mail
+                          {t('detailPage.email')}
                         </h4>
                         <div className="space-y-2">
                           {getAllEmails().map((email, index) => (
@@ -1017,7 +1017,7 @@ const DetailPageComprehensive = () => {
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
                           <Users className="w-4 h-4 mr-2 text-gray-600" />
-                          Ansprechpartner
+                          {t('detailPage.contactPerson')}
                         </h4>
                         <div className="space-y-2">
                           {safeArray(workshop.contact_persons).map((person, index) => (
@@ -1083,7 +1083,7 @@ const DetailPageComprehensive = () => {
                 <CardHeader>
                 <CardTitle className="flex items-center">
                   <Building className="w-5 h-5 text-[#005787] mr-2" />
-                  Status & Klassifikation
+                  {t('detailPage.statusClassification')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -1094,20 +1094,20 @@ const DetailPageComprehensive = () => {
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
                         <CheckCircle className={`w-4 h-4 mr-2 ${safeGet(workshop, 'operational_status') === 'OPERATIONAL' ? 'text-green-600' : 'text-red-600'}`} />
-                        Betriebsstatus
+                        {t('detailPage.operatingStatus')}
                       </h4>
                       <Badge variant={safeGet(workshop, 'operational_status') === 'OPERATIONAL' ? 'active' : 'destructive'} className="text-sm">
-                        {safeGet(workshop, 'operational_status') === 'OPERATIONAL' ? 'Aktiv' : 'Inaktiv'}
+                        {safeGet(workshop, 'operational_status') === 'OPERATIONAL' ? t('detailPage.active') : t('detailPage.unknown')}
                       </Badge>
                   </div>
                   
                     {/* Primary Classification */}
                     {safeGet(workshop, 'primary_classification') && (
                       <div className="bg-gray-50 p-4 rounded-lg">
-                        <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
-                          <Tag className="w-4 h-4 mr-2 text-gray-600" />
-                          Hauptklassifikation
-                        </h4>
+                      <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
+                        <Tag className="w-4 h-4 mr-2 text-gray-600" />
+                        {t('detailPage.primaryClassification')}
+                      </h4>
                         <Badge variant="outline" className="text-sm">
                           {safeGet(workshop, 'primary_classification')}
                         </Badge>
@@ -1119,7 +1119,7 @@ const DetailPageComprehensive = () => {
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
                           <Building className="w-4 h-4 mr-2 text-gray-600" />
-                          Geschäftstyp
+                          {t('detailPage.businessType')}
                         </h4>
                         <Badge variant="outline" className="text-sm">
                           {translateBusinessType(safeGet(googleData, 'type'))}
@@ -1135,7 +1135,7 @@ const DetailPageComprehensive = () => {
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
                           <Wrench className="w-4 h-4 mr-2 text-gray-600" />
-                          Service-Typen
+                          {t('detailPage.serviceTypes')}
                         </h4>
                         <div className="flex flex-wrap gap-2">
                           {getServiceTypes().map((type, index) => (
@@ -1152,11 +1152,11 @@ const DetailPageComprehensive = () => {
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
                           <CheckCircle className="w-4 h-4 mr-2 text-gray-600" />
-                          Verifizierung
+                          {t('detailPage.verification')}
                         </h4>
                         <div className="flex items-center">
                           <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                          <span className="text-sm text-gray-600">Google verifiziert</span>
+                          <span className="text-sm text-gray-600">{t('detailPage.googleVerified')}</span>
                         </div>
                       </div>
                     )}
@@ -1203,7 +1203,7 @@ const DetailPageComprehensive = () => {
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center">
                       <Clock className="w-5 h-5 text-[#005787] mr-2" />
-                    Öffnungszeiten
+                    {t('detailPage.openingHours')}
                   </CardTitle>
                     {/* Current Status via openingHours util */}
                   {(() => {
@@ -1282,49 +1282,49 @@ const DetailPageComprehensive = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <FileText className="w-5 h-5 text-[#005787] mr-2" />
-                    Handelsregister
+                    {t('detailPage.commercialRegister')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {northdataData.company_name && (
                       <div>
-                      <span className="font-medium text-gray-700">Firmenname:</span>
+                      <span className="font-medium text-gray-700">{t('detailPage.companyName')}:</span>
                       <span className="ml-2">{northdataData.company_name}</span>
                               </div>
                   )}
                   {northdataData.legal_form && (
                     <div>
-                      <span className="font-medium text-gray-700">Rechtsform:</span>
+                      <span className="font-medium text-gray-700">{t('detailPage.legalForm')}:</span>
                       <span className="ml-2">{northdataData.legal_form}</span>
                         </div>
                   )}
                   {northdataData.register_id && (
                     <div>
-                      <span className="font-medium text-gray-700">Register-ID:</span>
+                      <span className="font-medium text-gray-700">{t('detailPage.registerID')}:</span>
                       <span className="ml-2">{northdataData.register_id}</span>
                       </div>
                     )}
                   {northdataData.court && (
                       <div>
-                      <span className="font-medium text-gray-700">Amtsgericht:</span>
+                      <span className="font-medium text-gray-700">{t('detailPage.court')}:</span>
                       <span className="ml-2">{northdataData.court}</span>
                               </div>
                   )}
                   {northdataData.vat_id && (
                     <div>
-                      <span className="font-medium text-gray-700">USt.-Id.:</span>
+                      <span className="font-medium text-gray-700">{t('detailPage.vatID')}:</span>
                       <span className="ml-2">{northdataData.vat_id}</span>
                         </div>
                   )}
                   {northdataData.industry && (
                     <div>
-                      <span className="font-medium text-gray-700">Branche:</span>
+                      <span className="font-medium text-gray-700">{t('detailPage.industry')}:</span>
                       <span className="ml-2">{northdataData.industry}</span>
                       </div>
                     )}
                   {northdataData.status && (
                       <div>
-                      <span className="font-medium text-gray-700">Status:</span>
+                      <span className="font-medium text-gray-700">{t('detailPage.status')}:</span>
                       <Badge variant="outline" className="ml-2">{northdataData.status}</Badge>
                       </div>
                     )}
@@ -1602,7 +1602,7 @@ const DetailPageComprehensive = () => {
                       </g>
                     </svg>
                   </div>
-                  Standort & Navigation
+                  {t('detailPage.locationNavigation')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
