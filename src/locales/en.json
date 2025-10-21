@@ -65,6 +65,7 @@
     "results": "Coverage",
     "noResults": "No results found",
     "showAll": "Show all 750",
+    "showAllCount": "Show all",
     "showLess": "Show less",
     "exportData": "Export filtered workshop data",
     "entriesExported": "entries will be exported",

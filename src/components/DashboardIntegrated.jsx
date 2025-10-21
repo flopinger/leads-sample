@@ -21,7 +21,7 @@ import { DATA_LAST_UPDATED } from '../utils/constants';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilters, tenantName = '' }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [showAllEntries, setShowAllEntries] = useState(false);
 
   // Translation function for classifications
@@ -644,7 +644,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                       onClick={() => setShowAllEntries(true)}
                       className="text-[color:var(--action-500)] border-[color:var(--action-500)] hover:bg-[color:var(--action-500)] hover:text-white"
                     >
-                      Alle {filteredData.length} anzeigen
+                      {t('dashboard.showAllCount')} {filteredData.length} {language === 'de' ? 'anzeigen' : ''}
                     </Button>
                   )}
                 </CardTitle>

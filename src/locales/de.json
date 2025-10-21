@@ -65,6 +65,7 @@
     "results": "Abdeckung",
     "noResults": "Keine Ergebnisse gefunden",
     "showAll": "Alle 750 anzeigen",
+    "showAllCount": "Alle",
     "showLess": "Weniger anzeigen",
     "exportData": "Exportieren Sie die gefilterten Werkstattdaten",
     "entriesExported": "Einträge werden exportiert",
