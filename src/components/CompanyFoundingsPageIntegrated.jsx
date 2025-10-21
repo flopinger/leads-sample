@@ -20,8 +20,10 @@ import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { filterEmails, filterEmailsFromArray } from '../utils/emailFilter';
 import { convertToCSV } from '../utils/dataUtils';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const CompanyFoundingsPageIntegrated = ({ data }) => {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState({ from: undefined, to: undefined });
 
@@ -266,13 +268,13 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                   ← Zurück
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Unternehmensgründungen</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{t('foundings.title')}</h1>
             </div>
             <div className="flex items-center space-x-3">
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                 <Badge variant="outline" className={`${badgeStyles.callout} text-sm px-3 py-1`}>
                   <Calendar className="w-3 h-3 mr-1" />
-                  Teilausschnitt innerhalb des exportierten Datenbestandes.
+                  {t('foundings.subtitle')}
                 </Badge>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
@@ -283,24 +285,24 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                       size="sm"
                     >
                       <Download className="mr-2 h-4 w-4" />
-                      Export ({filteredEvents.length > 0 ? new Set(filteredEvents.map(event => event.workshop_id)).size : 0})
+                      {t('common.export')} ({filteredEvents.length > 0 ? new Set(filteredEvents.map(event => event.workshop_id)).size : 0})
                       <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={exportFilteredCompaniesJSON}>
                       <Download className="h-4 w-4 mr-2" />
-                      JSON
+                      {t('foundings.json')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={exportFilteredCompaniesCSV}>
                       <Download className="h-4 w-4 mr-2" />
-                      CSV
+                      {t('foundings.csv')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <Link to="/api-docs">
                       <DropdownMenuItem>
                         <Code className="h-4 w-4 mr-2" />
-                        API
+                        {t('foundings.api')}
                       </DropdownMenuItem>
                     </Link>
                   </DropdownMenuContent>
