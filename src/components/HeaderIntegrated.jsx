@@ -18,10 +18,13 @@ import {
   Code,
   User
 } from 'lucide-react';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useLanguage } from '../contexts/LanguageContext';
 // Dynamic, tenant-specific logo is served by backend
 
 const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
   const location = useLocation();
+  const { t } = useLanguage();
 
   // Calculate statistics from integrated data
   const totalWorkshops = allData.length;
@@ -43,7 +46,7 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
           <div className="flex items-center space-x-3 font-semibold">
             <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <img src="/api/logo" alt="Logo" className="h-8 w-auto brightness-0 invert" />
-              <span className="text-sm opacity-90">Daten-Sample für {tenantName || ' '}</span>
+              <span className="text-sm opacity-90">{t('header.dataSample')} {tenantName || ' '}</span>
             </Link>
           </div>
 
@@ -58,7 +61,7 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
                 }`}
               >
                 <Home className="mr-2 h-4 w-4" />
-                Start
+                {t('header.workshops')}
                 <Badge className="ml-2 bg-white/20 text-white border-white/30">
                   {totalWorkshops}
                 </Badge>
@@ -74,7 +77,7 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
                 }`}
               >
                 <Building className="mr-2 h-4 w-4" />
-                Gründungen
+                {t('header.foundings')}
                 <Badge className="ml-2 bg-white/20 text-white border-white/30">
                   {totalFoundings}
                 </Badge>
@@ -90,7 +93,7 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
                 }`}
               >
                 <TrendingUp className="mr-2 h-4 w-4" />
-                Management-Änderungen
+                {t('header.managementChanges')}
                 <Badge className="ml-2 bg-white/20 text-white border-white/30">
                   {totalManagementChanges}
                 </Badge>
@@ -153,16 +156,19 @@ const HeaderIntegrated = ({ onLogout, allData = [], tenantName = '' }) => {
               <Link to="/api-docs">
                 <DropdownMenuItem className="cursor-pointer">
                   <Code className="mr-2 h-4 w-4" />
-                  API-Dokumentation
+                  {t('header.apiDocs')}
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={onLogout} className="cursor-pointer text-red-600 focus:text-red-600">
                 <LogOut className="mr-2 h-4 w-4" />
-                Abmelden
+                {t('header.logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          
+          {/* Language Switcher */}
+          <LanguageSwitcher variant="ghost" size="sm" />
         </div>
       </div>
     </header>
