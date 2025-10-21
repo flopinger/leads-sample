@@ -461,7 +461,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                       </div>
                       <div className="flex items-center space-x-2 mt-2">
                         <Badge className="bg-green-50 text-green-700 border-green-200 text-sm">
-                          Neueintragung
+                          {t('foundings.newEntry')}
                         </Badge>
                         <span className="text-sm text-gray-500">{event.event_date}</span>
                       </div>
@@ -471,12 +471,12 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-3">
                       <div>
-                        <span className="font-medium text-gray-700">Branche:</span>
+                        <span className="font-medium text-gray-700">{t('foundings.industry')}:</span>
                         <p className="text-gray-900 mt-1">{event.details?.branch || event.workshop_classification || 'Nicht verfügbar'}</p>
                       </div>
                       
                       <div>
-                        <span className="font-medium text-gray-700">Straße:</span>
+                        <span className="font-medium text-gray-700">{t('foundings.street')}:</span>
                         <p className="text-gray-900 mt-1">
                           {event.workshop_street} {event.workshop_house_number}
                         </p>
@@ -484,7 +484,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                       
                       {event.details?.register_id && (
                         <div>
-                          <span className="font-medium text-gray-700">Register-ID:</span>
+                          <span className="font-medium text-gray-700">{t('foundings.registerId')}:</span>
                           <p className="text-gray-900 mt-1">{event.details.register_id}</p>
                         </div>
                       )}
@@ -492,13 +492,13 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
 
                     <div className="space-y-3">
                       <div>
-                        <span className="font-medium text-gray-700">Ort:</span>
+                        <span className="font-medium text-gray-700">{t('foundings.location')}:</span>
                         <p className="text-gray-900 mt-1">{event.workshop_zip} {event.workshop_city}</p>
                       </div>
                       
                       {event.details?.court && (
                         <div>
-                          <span className="font-medium text-gray-700">Amtsgericht:</span>
+                          <span className="font-medium text-gray-700">{t('foundings.registrationCourt')}:</span>
                           <p className="text-gray-900 mt-1">{event.details.court}</p>
                         </div>
                       )}
@@ -508,7 +508,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
 
                   <div className="mt-4 pt-4 border-t flex items-center justify-end">
                     <span className="text-xs text-gray-500">
-                      Erstellt: {new Date(event.created_at).toLocaleDateString('de-DE')}
+                      {t('managementChanges.created')}: {new Date(event.created_at).toLocaleDateString('de-DE')}
                     </span>
                   </div>
                 </Link>

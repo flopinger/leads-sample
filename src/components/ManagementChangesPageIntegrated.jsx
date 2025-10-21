@@ -473,7 +473,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                       </div>
                       <div className="flex items-center space-x-2 mt-2">
                         <Badge className={`${badgeStyles.date} text-sm`}>
-                          Management-Wechsel
+                          {t('managementChanges.managementChange')}
                         </Badge>
                         <span className="text-sm text-gray-500">{event.event_date}</span>
                       </div>
@@ -483,18 +483,18 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-3">
                       <div>
-                        <span className="font-medium text-gray-700">Änderung:</span>
+                        <span className="font-medium text-gray-700">{t('managementChanges.change')}:</span>
                         <p className="text-gray-900 mt-1">{event.description}</p>
                       </div>
                       
                       <div>
-                        <span className="font-medium text-gray-700">Ort:</span>
+                        <span className="font-medium text-gray-700">{t('managementChanges.location')}:</span>
                         <p className="text-gray-900 mt-1">{event.workshop_zip} {event.workshop_city}</p>
                       </div>
                       
                       {event.details?.register_id && (
                         <div>
-                          <span className="font-medium text-gray-700">Register-ID:</span>
+                          <span className="font-medium text-gray-700">{t('foundings.registerId')}:</span>
                           <p className="text-gray-900 mt-1">{event.details.register_id}</p>
                         </div>
                       )}
@@ -503,20 +503,20 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                     <div className="space-y-3">
                       {event.details?.court && (
                         <div>
-                          <span className="font-medium text-gray-700">Amtsgericht:</span>
+                          <span className="font-medium text-gray-700">{t('foundings.registrationCourt')}:</span>
                           <p className="text-gray-900 mt-1">{event.details.court}</p>
                         </div>
                       )}
                       
                       {event.details?.company_name && (
                         <div>
-                          <span className="font-medium text-gray-700">Firmenname (Register):</span>
+                          <span className="font-medium text-gray-700">{t('managementChanges.companyNameRegister')}:</span>
                           <p className="text-gray-900 mt-1">{event.details.company_name}</p>
                         </div>
                       )}
                       
                       <div>
-                        <span className="font-medium text-gray-700">Quelle:</span>
+                        <span className="font-medium text-gray-700">{t('managementChanges.source')}:</span>
                         <p className="text-gray-900 mt-1">Handelsregister</p>
                       </div>
                     </div>
@@ -525,7 +525,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
                   {/* Representatives */}
                   {event.details?.representatives && (
                     <div className="mt-4 pt-4 border-t">
-                      <span className="font-medium text-gray-700">Aktuelle Vertreter:</span>
+                      <span className="font-medium text-gray-700">{t('managementChanges.currentRepresentatives')}:</span>
                       <div className="mt-2 space-y-1">
                         {Object.entries(event.details.representatives).map(([key, rep]) => (
                           rep && (
@@ -541,7 +541,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
 
                   <div className="mt-4 pt-4 border-t flex items-center justify-end">
                     <span className="text-xs text-gray-500">
-                      Erstellt: {new Date(event.created_at).toLocaleDateString('de-DE')}
+                      {t('managementChanges.created')}: {new Date(event.created_at).toLocaleDateString('de-DE')}
                     </span>
                   </div>
                 </Link>

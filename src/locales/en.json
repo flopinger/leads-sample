@@ -106,7 +106,9 @@
     "street": "Street",
     "newEntry": "New Entry",
     "city": "Cities",
-    "location": "Location"
+    "location": "Location",
+    "registerId": "Register ID",
+    "registrationCourt": "Registration Court"
   },
   "managementChanges": {
     "title": "Management Changes",
@@ -125,7 +127,11 @@
     "lastThreeMonths": "Last 3 months",
     "created": "Created",
     "currentRepresentatives": "Current Representatives",
-    "change": "Change"
+    "change": "Change",
+    "location": "Location",
+    "managementChange": "Management Change",
+    "companyNameRegister": "Company Name (Register)",
+    "source": "Source"
   },
   "detailPage": {
     "backToOverview": "Back to Overview",

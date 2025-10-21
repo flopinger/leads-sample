@@ -106,7 +106,9 @@
     "street": "Straße",
     "newEntry": "Neueintragung",
     "city": "Städte",
-    "location": "Ort"
+    "location": "Ort",
+    "registerId": "Register-ID",
+    "registrationCourt": "Amtsgericht"
   },
   "managementChanges": {
     "title": "Management-Änderungen",
@@ -125,7 +127,11 @@
     "lastThreeMonths": "Letzte 3 Monate",
     "created": "Erstellt",
     "currentRepresentatives": "Aktuelle Vertreter",
-    "change": "Änderung"
+    "change": "Änderung",
+    "location": "Ort",
+    "managementChange": "Management-Wechsel",
+    "companyNameRegister": "Firmenname (Register)",
+    "source": "Quelle"
   },
   "detailPage": {
     "backToOverview": "Zurück zur Übersicht",
