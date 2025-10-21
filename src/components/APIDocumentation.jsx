@@ -336,12 +336,12 @@ print(data)`
                 </div>
 
                 <div className="pt-4 border-t">
-                  <h3 className="text-xl font-bold mb-3">GET /workshops/:id</h3>
+                  <h3 className="text-xl font-bold mb-3">{t('api.getWorkshopById')}</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    Ruft Details zu einer einzelnen Werkstatt ab.
+                    {t('api.getWorkshopByIdDesc')}
                   </p>
 
-                  <h4 className="font-semibold mt-4 mb-3">Beispiel</h4>
+                  <h4 className="font-semibold mt-4 mb-3">{t('api.example')}</h4>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-xs">
                     <code>{codeExamples.curl.workshopDetail}</code>
                   </pre>
@@ -351,21 +351,21 @@ print(data)`
 
             <TabsContent value="foundings" className="space-y-6 mt-6">
               <div>
-                <h3 className="text-xl font-bold mb-3">GET /foundings</h3>
+                <h3 className="text-xl font-bold mb-3">{t('api.getFoundings')}</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Ruft Daten zu Unternehmensgründungen ab.
+                  {t('api.getFoundingsDesc')}
                 </p>
 
-                <h4 className="font-semibold mb-3 mt-4">Query Parameter</h4>
+                <h4 className="font-semibold mb-3 mt-4">{t('api.queryParams')}</h4>
                 <div className="space-y-2 text-sm bg-gray-50 p-4 rounded">
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">search</code> <span className="text-gray-600">Suche nach Firmenname oder Stadt</span></div>
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">dateFrom</code> <span className="text-gray-600">Gründungen ab Datum (YYYY-MM-DD)</span></div>
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">dateTo</code> <span className="text-gray-600">Gründungen bis Datum (YYYY-MM-DD)</span></div>
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">limit</code> <span className="text-gray-600">Max. Anzahl Ergebnisse</span></div>
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">offset</code> <span className="text-gray-600">Offset für Paginierung</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">search</code> <span className="text-gray-600">{t('api.searchFoundingsParam')}</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">dateFrom</code> <span className="text-gray-600">{t('api.dateFromParam')}</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">dateTo</code> <span className="text-gray-600">{t('api.dateToParam')}</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">limit</code> <span className="text-gray-600">{t('api.limitParam')}</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">offset</code> <span className="text-gray-600">{t('api.offsetParam')}</span></div>
                 </div>
 
-                <h4 className="font-medium mt-4 mb-2">Beispiel</h4>
+                <h4 className="font-medium mt-4 mb-2">{t('api.example')}</h4>
                 <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-xs">
                   <code>{codeExamples.curl.foundings}</code>
                 </pre>
@@ -374,21 +374,21 @@ print(data)`
 
             <TabsContent value="management" className="space-y-6 mt-6">
               <div>
-                <h3 className="text-xl font-bold mb-3">GET /management-changes</h3>
+                <h3 className="text-xl font-bold mb-3">{t('api.getManagementChanges')}</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Ruft Daten zu Management-Änderungen ab.
+                  {t('api.getManagementChangesDesc')}
                 </p>
 
-                <h4 className="font-medium mb-2">Query Parameter</h4>
+                <h4 className="font-medium mb-2">{t('api.queryParams')}</h4>
                 <div className="space-y-2 text-sm">
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">search</code> <span className="text-gray-600">Suche nach Firmenname oder Stadt</span></div>
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">dateFrom</code> <span className="text-gray-600">Änderungen ab Datum (YYYY-MM-DD)</span></div>
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">dateTo</code> <span className="text-gray-600">Änderungen bis Datum (YYYY-MM-DD)</span></div>
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">limit</code> <span className="text-gray-600">Max. Anzahl Ergebnisse</span></div>
-                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">offset</code> <span className="text-gray-600">Offset für Paginierung</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">search</code> <span className="text-gray-600">{t('api.searchManagementParam')}</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">dateFrom</code> <span className="text-gray-600">{t('api.dateFromParam')}</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">dateTo</code> <span className="text-gray-600">{t('api.dateToParam')}</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">limit</code> <span className="text-gray-600">{t('api.limitParam')}</span></div>
+                  <div className="flex"><code className="bg-gray-100 px-2 py-1 rounded mr-2">offset</code> <span className="text-gray-600">{t('api.offsetParam')}</span></div>
                 </div>
 
-                <h4 className="font-medium mt-4 mb-2">Beispiel</h4>
+                <h4 className="font-medium mt-4 mb-2">{t('api.example')}</h4>
                 <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-xs">
                   <code>{codeExamples.curl.managementChanges}</code>
                 </pre>
