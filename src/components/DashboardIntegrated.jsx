@@ -499,7 +499,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-3xl font-bold heading-contrast">{totalWithEvents}</p>
-                      <p className="text-sm text-gray-600 mt-1">Mit Events</p>
+                      <p className="text-sm text-gray-600 mt-1">{t('dashboard.withEvents')}</p>
                     </div>
                     <div className="brand-tint-10 p-3 rounded-lg">
                       <TrendingUp className="h-6 w-6 brand-text" />
@@ -514,7 +514,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
               <CardHeader>
                 <CardTitle className="flex items-center text-gray-900">
                   <Building className="mr-2 h-5 w-5 brand-text" />
-                  Premium-Konzepte
+                  {t('dashboard.premiumConcepts')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -636,7 +636,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
             <Card className="border border-gray-200 shadow-md bg-white">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between text-gray-900">
-                  <span>Werkstätten ({filteredData.length})</span>
+                  <span>{t('dashboard.totalWorkshops')} ({filteredData.length})</span>
                   {filteredData.length > 10 && !showAllEntries && (
                     <Button 
                       variant="outline" 
@@ -700,13 +700,13 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                               
                               <div className="space-y-2">
                                 <div>
-                                  <span className="text-sm font-medium text-gray-700">Klassifikation:</span>
+                                  <span className="text-sm font-medium text-gray-700">{t('dashboard.classification')}:</span>
                                   <p className="text-sm text-gray-600">{translateClassification(item.primary_classification)}</p>
                                 </div>
                                 
                                 {item.concepts_networks && item.concepts_networks.length > 0 && (
                                   <div>
-                                    <span className="text-sm font-medium text-gray-700">Konzepte:</span>
+                                    <span className="text-sm font-medium text-gray-700">{t('dashboard.concepts')}:</span>
                                     <div className="flex flex-wrap gap-1 mt-1">
                                       {item.concepts_networks.slice(0, 3).map((concept, index) => (
                                         <Badge 
@@ -738,7 +738,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                             
                             <div className="flex items-center justify-between">
                               <Badge className={`${badgeStyles.status.operational}`}>
-                                {item.operational_status === 'OPERATIONAL' ? 'AKTIV' : (item.operational_status || 'AKTIV')}
+                                {item.operational_status === 'OPERATIONAL' ? t('dashboard.active') : (item.operational_status || t('dashboard.active'))}
                               </Badge>
                               <span className="text-xs text-gray-500">
                                 ID: {item.id.slice(-8)}
@@ -758,7 +758,7 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
                       onClick={() => setShowAllEntries(true)}
                       className="text-[color:var(--action-500)] border-[color:var(--action-500)] hover:bg-[color:var(--action-500)] hover:text-white"
                     >
-                      Weitere {filteredData.length - 50} Werkstätten anzeigen
+                      {t('dashboard.showAll')}
                     </Button>
                   </div>
                 )}
@@ -782,13 +782,13 @@ const DashboardIntegrated = ({ data, searchTerm, setSearchTerm, filters, setFilt
           <div className="mt-6 max-w-4xl mx-auto">
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-gray-800 mb-2">
-                Wichtiger Hinweis zu den Daten
+                {t('footer.importantNotice')}
               </h3>
               <div className="text-xs text-gray-600 space-y-1">
-                <p>Die bereitgestellten Daten dienen ausschließlich als Beispiel („Sample") und dürfen nur in Stichproben zur Qualitätsüberprüfung verwendet werden. Eine vollständige Nutzung, Weitergabe oder sonstige Verwertung ist nicht gestattet.</p>
-                <p>Jede Verwendung der Daten muss vom Verwender eigenverantwortlich auf ihre DSGVO-Konformität geprüft werden. auteon erteilt mit der Bereitstellung ausdrücklich keine Rechte zur Nutzung der Daten außerhalb der geltenden datenschutzrechtlichen Bestimmungen.</p>
+                <p>{t('footer.sampleUsage')}</p>
+                <p>{t('footer.gdprCompliance')}</p>
                 <p>{t('common.disclaimer')}</p>
-                <p><strong>Alle Daten ohne Gewähr.</strong></p>
+                <p><strong>{t('footer.noWarranty')}</strong></p>
               </div>
             </div>
           </div>

@@ -321,7 +321,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <Input
-                  placeholder="Suchen nach Firma, Ort, Geschäftsführer..."
+                  placeholder={t('foundings.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pr-10"
