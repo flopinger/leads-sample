@@ -346,7 +346,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
                         format(dateRange.from, "dd.MM.yyyy", { locale: de })
                       )
                     ) : (
-                      <span>Zeitraum wählen</span>
+                      <span>{t('foundings.filterByDate')}</span>
                     )}
                   </Button>
                 </PopoverTrigger>
@@ -386,7 +386,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-3xl font-bold text-[#005787]">{totalFoundings}</p>
-                  <p className="text-sm text-gray-600 mt-1">Gründungen</p>
+                  <p className="text-sm text-gray-600 mt-1">{t('foundings.events')}</p>
                 </div>
                 <div className="brand-tint-10 p-3 rounded-lg">
                   <Building className="h-6 w-6 brand-text" />
@@ -428,7 +428,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-3xl font-bold text-[#005787]">{uniqueCities}</p>
-                  <p className="text-sm text-gray-600 mt-1">Städte</p>
+                  <p className="text-sm text-gray-600 mt-1">{t('foundings.city')}</p>
                 </div>
                 <div className="brand-tint-10 p-3 rounded-lg">
                   <MapPin className="h-6 w-6 brand-text" />
@@ -443,7 +443,7 @@ const CompanyFoundingsPageIntegrated = ({ data }) => {
           <CardHeader>
             <CardTitle className="flex items-center text-gray-900">
               <Calendar className="mr-2 h-5 w-5 text-[#005787]" />
-              Gründungen ({filteredEvents.length})
+              {t('foundings.events')} ({filteredEvents.length})
             </CardTitle>
           </CardHeader>
           <CardContent>

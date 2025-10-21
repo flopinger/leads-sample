@@ -398,7 +398,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-3xl font-bold text-[#005787]">{totalChanges}</p>
-                  <p className="text-sm text-gray-600 mt-1">Management-Änderungen</p>
+                  <p className="text-sm text-gray-600 mt-1">{t('managementChanges.events')}</p>
                 </div>
                 <div className="brand-tint-10 p-3 rounded-lg">
                   <TrendingUp className="h-6 w-6 brand-text" />
@@ -412,7 +412,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-3xl font-bold text-[#005787]">{uniqueCompanies}</p>
-                  <p className="text-sm text-gray-600 mt-1">Betroffene Unternehmen</p>
+                  <p className="text-sm text-gray-600 mt-1">{t('managementChanges.companies')}</p>
                 </div>
                 <div className="brand-tint-10 p-3 rounded-lg">
                   <Users className="h-6 w-6 brand-text" />
@@ -426,7 +426,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-3xl font-bold text-[#005787]">{uniqueCities}</p>
-                  <p className="text-sm text-gray-600 mt-1">Städte</p>
+                  <p className="text-sm text-gray-600 mt-1">{t('managementChanges.city')}</p>
                 </div>
                 <div className="brand-tint-10 p-3 rounded-lg">
                   <MapPin className="h-6 w-6 brand-text" />
@@ -455,7 +455,7 @@ const ManagementChangesPageIntegrated = ({ data }) => {
           <CardHeader>
             <CardTitle className="flex items-center text-gray-900">
               <Users className="mr-2 h-5 w-5 text-[#005787]" />
-              Management-Änderungen ({filteredEvents.length})
+              {t('managementChanges.events')} ({filteredEvents.length})
             </CardTitle>
           </CardHeader>
           <CardContent>

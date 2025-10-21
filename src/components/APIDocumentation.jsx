@@ -234,7 +234,7 @@ print(data)`
         <CardHeader>
           <CardTitle className="flex items-center">
             <Code className="h-5 w-5 mr-2" />
-            API Dokumentation
+            {t('api.documentation')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -283,7 +283,7 @@ print(data)`
 
                 <div className="mt-6">
                   <h4 className="text-lg font-semibold mb-2">Response Format</h4>
-                  <p>Alle erfolgreichen Antworten enthalten ein <code>metadata</code> und <code>data</code> Objekt:</p>
+                  <p>{t('api.responseText')}</p>
                   <pre className="bg-gray-100 p-4 rounded overflow-x-auto text-sm mt-3">
 {`{
   "metadata": {
