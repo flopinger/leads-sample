@@ -43,7 +43,7 @@ import {
 import { useLanguage } from '../contexts/LanguageContext';
 
 const DetailPageComprehensive = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { id } = useParams();
   const [workshop, setWorkshop] = useState(null);
   const [googleData, setGoogleData] = useState(null);
@@ -51,6 +51,28 @@ const DetailPageComprehensive = () => {
   const [error, setError] = useState(null);
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
+
+  // Translate weekday names
+  const translateDay = (germanDay) => {
+    const dayMap = {
+      'Montag': t('detailPage.monday'),
+      'Dienstag': t('detailPage.tuesday'),
+      'Mittwoch': t('detailPage.wednesday'),
+      'Donnerstag': t('detailPage.thursday'),
+      'Freitag': t('detailPage.friday'),
+      'Samstag': t('detailPage.saturday'),
+      'Sonntag': t('detailPage.sunday')
+    };
+    return dayMap[germanDay] || germanDay;
+  };
+
+  // Translate hours display
+  const translateHours = (hours) => {
+    if (hours === 'Geschlossen') {
+      return t('detailPage.closedLabel');
+    }
+    return hours;
+  };
 
   // Scroll to top when component mounts or ID changes
   useEffect(() => {
@@ -1171,15 +1193,15 @@ const DetailPageComprehensive = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Calendar className="w-5 h-5 text-[#005787] mr-2" />
-                    Unternehmenshistorie (2025)
+                    {t('detailPage.companyHistory')} (2025)
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     {safeArray(workshop.events).map((event, index) => {
-                      const eventType = safeGet(event, 'event_type', 'Unbekanntes Ereignis');
-                      const displayName = eventType === 'management_change' ? 'Management-Wechsel' : eventType;
-                      const eventDate = safeGet(event, 'event_date', safeGet(event, 'date', 'Datum unbekannt'));
+                      const eventType = safeGet(event, 'event_type', t('detailPage.unknownEvent'));
+                      const displayName = eventType === 'management_change' ? t('detailPage.managementChange') : eventType;
+                      const eventDate = safeGet(event, 'event_date', safeGet(event, 'date', t('detailPage.unknownDate')));
                       
                     return (
                         <div key={index} className="border-l-4 border-[#005787] pl-4 py-2">
@@ -1251,11 +1273,11 @@ const DetailPageComprehensive = () => {
                         >
                           <div className="flex items-center">
                             <span className={`font-medium ${isToday ? 'text-blue-900' : 'text-gray-700'}`}>
-                              {day}
+                              {translateDay(day)}
                             </span>
                             {isToday && (
                               <Badge variant="outline" className="ml-2 text-sm bg-blue-100 text-blue-800 border-blue-300">
-                                Heute
+                                {t('detailPage.today')}
                               </Badge>
                             )}
                           </div>
@@ -1266,7 +1288,7 @@ const DetailPageComprehensive = () => {
                                 ? 'text-blue-900'
                                 : 'text-gray-600'
                           }`}>
-                            {hours}
+                            {translateHours(hours)}
                           </span>
                         </div>
                       );
@@ -1344,7 +1366,7 @@ const DetailPageComprehensive = () => {
                           {/* Bilanzsumme */}
                           {safeGet(data, 'Bilanzsumme EUR') && (
                       <div>
-                              <span className="font-medium text-gray-700">Bilanzsumme:</span>
+                              <span className="font-medium text-gray-700">{t('detailPage.balanceSheet')}:</span>
                               <span className="ml-2">{safeGet(data, 'Bilanzsumme EUR')} €</span>
                       </div>
                     )}
@@ -1352,7 +1374,7 @@ const DetailPageComprehensive = () => {
                           {/* EK-Quote */}
                           {safeGet(data, 'EK-Quote %') && (
                             <div>
-                              <span className="font-medium text-gray-700">EK-Quote:</span>
+                              <span className="font-medium text-gray-700">{t('detailPage.equityRatio')}:</span>
                               <span className="ml-2">{safeGet(data, 'EK-Quote %')} %</span>
                   </div>
                           )}
@@ -1360,7 +1382,7 @@ const DetailPageComprehensive = () => {
                           {/* Finanzkennzahlen Datum */}
                           {safeGet(data, 'Finanzkennzahlen Datum') && (
                       <div>
-                              <span className="font-medium text-gray-700">Finanzkennzahlen Datum:</span>
+                              <span className="font-medium text-gray-700">{t('detailPage.financialDate')}:</span>
                               <span className="ml-2">{safeGet(data, 'Finanzkennzahlen Datum')}</span>
                             </div>
                           )}
@@ -1374,7 +1396,7 @@ const DetailPageComprehensive = () => {
                             
                             return managers.length > 0 ? (
                               <div>
-                                <span className="font-medium text-gray-700">Geschäftsführer:</span>
+                                <span className="font-medium text-gray-700">{t('detailPage.ceo')}:</span>
                                 <div className="ml-2 mt-1">
                                   {managers.map((manager, index) => (
                                     <div key={index} className="text-sm">{manager}</div>
@@ -1387,7 +1409,7 @@ const DetailPageComprehensive = () => {
                           {/* Mitarbeiterzahl */}
                           {safeGet(data, 'Mitarbeiterzahl') && (
                     <div>
-                              <span className="font-medium text-gray-700">Mitarbeiterzahl:</span>
+                              <span className="font-medium text-gray-700">{t('detailPage.employees')}:</span>
                               <span className="ml-2">{safeGet(data, 'Mitarbeiterzahl')}</span>
                           </div>
                         )}
@@ -1416,7 +1438,7 @@ const DetailPageComprehensive = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Info className="w-5 h-5 text-[#005787] mr-2" />
-                    Beschreibung
+                    {t('detailPage.description')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -1465,7 +1487,7 @@ const DetailPageComprehensive = () => {
               <CardHeader>
                   <CardTitle className="flex items-center">
                     <Star className="w-5 h-5 text-[#005787] mr-2" />
-                    Google Bewertungen
+                    {t('detailPage.googleReviews')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -1474,7 +1496,7 @@ const DetailPageComprehensive = () => {
                       <Star className="w-5 h-5 text-yellow-400 fill-current" />
                       <span className="text-2xl font-bold ml-1">{safeGet(googleData, 'rating', '0')}</span>
                   </div>
-                    <span className="text-gray-600">({safeGet(googleData, 'reviews', '0')} Bewertungen)</span>
+                    <span className="text-gray-600">({safeGet(googleData, 'reviews', '0')} {t('detailPage.reviews')})</span>
                   </div>
                   
                   {/* Review Distribution */}
@@ -1507,7 +1529,7 @@ const DetailPageComprehensive = () => {
                   {/* Review Tags */}
                   {getReviewTags().length > 0 && (
                   <div>
-                      <h4 className="font-semibold text-gray-700 mb-2">Bewertungsthemen:</h4>
+                      <h4 className="font-semibold text-gray-700 mb-2">{t('detailPage.reviewTopics')}:</h4>
                     <div className="flex flex-wrap gap-1">
                         {getReviewTags().map((tag, index) => (
                         <Badge key={index} variant="outline" className="text-sm">
@@ -1527,7 +1549,7 @@ const DetailPageComprehensive = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Users className="w-5 h-5 text-[#005787] mr-2" />
-                    Beliebte Zeiten
+                    {t('detailPage.popularTimes')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -1554,7 +1576,7 @@ const DetailPageComprehensive = () => {
                         </g>
                       </svg>
                     </div>
-                    Service-Angebote
+                    {t('detailPage.serviceOffers')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -1575,7 +1597,7 @@ const DetailPageComprehensive = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Network className="w-5 h-5 text-[#005787] mr-2" />
-                    Netzwerke & Partnerschaften
+                    {t('detailPage.networksPartnerships')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
