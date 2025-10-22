@@ -1,0 +1,1010 @@
+openapi: "3.1.0"
+
+info:
+  title: Auteon Werkstattdaten API
+  version: "1.0.0"
+  description: |
+    RESTful API für den Zugriff auf Werkstattdaten, Unternehmensgründungen und Management-Änderungen.
+    
+    **Authentifizierung:** Alle Endpunkte erfordern einen gültigen API-Key im `X-API-Key` Header.
+    
+    **Rate Limiting:** Das API-Limit ist pro Tenant konfiguriert und wird pro abgerufenem Datensatz gezählt.
+    
+    **Pagination:** Alle Listen-Endpunkte unterstützen `limit` (max. 1000) und `offset` Parameter.
+  contact:
+    name: Auteon Support
+    email: fp@auteon.de
+    url: https://auteon.de
+  license:
+    name: Proprietary
+    url: https://auteon.de/terms
+
+servers:
+  - url: https://data-sample.auteon.net/api
+    description: Production Server
+  - url: http://localhost:8787/api
+    description: Development Server
+
+tags:
+  - name: Workshops
+    description: Werkstattadressen und Details
+  - name: Foundings
+    description: Unternehmensgründungen
+  - name: Management Changes
+    description: Management-Änderungen in Unternehmen
+  - name: Usage
+    description: API-Nutzungsstatistiken
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /v1/workshops:
+    get:
+      tags:
+        - Workshops
+      summary: Liste aller Werkstätten abrufen
+      description: |
+        Ruft eine gefilterte und paginierte Liste von Werkstätten ab.
+        Jeder zurückgegebene Datensatz wird auf das API-Limit angerechnet.
+      operationId: getWorkshops
+      parameters:
+        - name: search
+          in: query
+          description: Volltextsuche in Name, Stadt oder PLZ
+          required: false
+          schema:
+            type: string
+            example: "Bosch"
+        - name: city
+          in: query
+          description: Filter nach exakter Stadt
+          required: false
+          schema:
+            type: string
+            example: "Hamburg"
+        - name: zipCode
+          in: query
+          description: Filter nach PLZ
+          required: false
+          schema:
+            type: string
+            pattern: '^\d{5}$'
+            example: "22419"
+        - name: concept
+          in: query
+          description: Filter nach Konzept/Netzwerk (Teilstring-Suche)
+          required: false
+          schema:
+            type: string
+            example: "AutoCrew"
+        - name: limit
+          in: query
+          description: Maximale Anzahl zurückzugebender Ergebnisse
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+            example: 50
+        - name: offset
+          in: query
+          description: Anzahl zu überspringender Ergebnisse (für Pagination)
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+            example: 0
+      responses:
+        '200':
+          description: Erfolgreiche Abfrage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkshopListResponse'
+              examples:
+                success:
+                  summary: Erfolgreiche Antwort mit 2 Werkstätten
+                  value:
+                    metadata:
+                      total: 750
+                      returned: 2
+                      offset: 0
+                      limit: 2
+                      filters:
+                        search: null
+                        city: "Hamburg"
+                        zipCode: null
+                        concept: null
+                    data:
+                      - id: "GAdLEFUOFV9ITlYJBBhOX0xFTFVDDwQAAgBQVENeThdYWUVc"
+                        name: "Reifen Helm Filiale - Hamburg-Langenhorn"
+                        country_code: "DE"
+                        city: "Hamburg"
+                        zip_code: "22419"
+                        street: "Langenhorner Chaussee"
+                        house_number: "475"
+                        updated_at: "2025-10-09 22:22:24.486274 UTC"
+                        website_url: "http://www.reifenhelm.de/"
+                        operational_status: "OPERATIONAL"
+                        telephone: "+494052720613"
+                        email:
+                          - "arval@reifenhelm.de"
+                        concepts_networks:
+                          - "AutoCrew"
+                          - "Fleetpartner"
+                        primary_classification: "Fleetpartner Reifen Helm"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/foundings:
+    get:
+      tags:
+        - Foundings
+      summary: Liste von Unternehmensgründungen abrufen
+      description: |
+        Ruft gefilterte Daten zu Unternehmensgründungen und Neueintragungen ab.
+        Jeder zurückgegebene Datensatz wird auf das API-Limit angerechnet.
+      operationId: getFoundings
+      parameters:
+        - name: search
+          in: query
+          description: Volltextsuche in Firmenname, Stadt oder Geschäftsführer
+          required: false
+          schema:
+            type: string
+            example: "GmbH"
+        - name: dateFrom
+          in: query
+          description: Gründungen ab diesem Datum (inklusiv)
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+        - name: dateTo
+          in: query
+          description: Gründungen bis zu diesem Datum (inklusiv)
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2025-12-31"
+        - name: limit
+          in: query
+          description: Maximale Anzahl zurückzugebender Ergebnisse
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+        - name: offset
+          in: query
+          description: Anzahl zu überspringender Ergebnisse
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Erfolgreiche Abfrage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoundingListResponse'
+              examples:
+                success:
+                  summary: Erfolgreiche Antwort mit Gründungen
+                  value:
+                    metadata:
+                      total: 1250
+                      returned: 1
+                      offset: 0
+                      limit: 1
+                      filters:
+                        search: null
+                        dateFrom: "2025-01-01"
+                        dateTo: null
+                    data:
+                      - Name: "WM Kraftfahrzeugtechnik GmbH"
+                        Rechtsform: "GmbH"
+                        Land: "DE"
+                        PLZ: 53359
+                        Ort: "Rheinbach"
+                        "Straße": "Boschstr. 8"
+                        "HR Amtsgericht": "Bonn"
+                        "Register-ID": "HRB 29650"
+                        Status: "active"
+                        "Eintragung": "Eintragung"
+                        "Eintragung Datum": "02.01.2025"
+                        "Branche (WZ)": "45.20.3 Instandhaltung und Reparatur von Kraftwagen"
+                        "Ges. Vertreter 1": "Maintke, Stephan"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/management-changes:
+    get:
+      tags:
+        - Management Changes
+      summary: Liste von Management-Änderungen abrufen
+      description: |
+        Ruft Daten zu Management-Wechseln und Änderungen in der Unternehmensführung ab.
+        Jeder zurückgegebene Datensatz wird auf das API-Limit angerechnet.
+      operationId: getManagementChanges
+      parameters:
+        - name: search
+          in: query
+          description: Volltextsuche in Firmenname, Stadt oder Geschäftsführer
+          required: false
+          schema:
+            type: string
+            example: "GmbH"
+        - name: dateFrom
+          in: query
+          description: Management-Änderungen ab diesem Datum (inklusiv)
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+        - name: dateTo
+          in: query
+          description: Management-Änderungen bis zu diesem Datum (inklusiv)
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2025-12-31"
+        - name: limit
+          in: query
+          description: Maximale Anzahl zurückzugebender Ergebnisse
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+        - name: offset
+          in: query
+          description: Anzahl zu überspringender Ergebnisse
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Erfolgreiche Abfrage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementChangeListResponse'
+              examples:
+                success:
+                  summary: Erfolgreiche Antwort mit Management-Änderungen
+                  value:
+                    metadata:
+                      total: 890
+                      returned: 1
+                      offset: 0
+                      limit: 1
+                      filters:
+                        search: null
+                        dateFrom: "2025-01-01"
+                        dateTo: null
+                    data:
+                      - Name: "LKW Service Pötzsch - GmbH"
+                        Rechtsform: "GmbH"
+                        Land: "DE"
+                        PLZ: 1744
+                        Ort: "Dippoldiswalde"
+                        "Straße": "Oberhäslicher Str. 7"
+                        "HR Amtsgericht": "Dresden"
+                        "Register-ID": "HRB 4598"
+                        Status: "active"
+                        Managementwechsel: "Geschäftsführer: Tom Uwe Bormann"
+                        "Managementwechsel Datum": "02.01.2025"
+                        "Ges. Vertreter 1": "Bormann, Tom Uwe"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/usage:
+    get:
+      tags:
+        - Usage
+      summary: API-Nutzungsstatistiken abrufen
+      description: |
+        Ruft die aktuellen Nutzungsstatistiken für den authentifizierten API-Key ab.
+        Dieser Endpunkt zählt nicht zum API-Limit.
+      operationId: getUsage
+      responses:
+        '200':
+          description: Erfolgreiche Abfrage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageResponse'
+              examples:
+                success:
+                  summary: Aktuelle Nutzungsstatistiken
+                  value:
+                    usage:
+                      current: 1250
+                      limit: 10000
+                      remaining: 8750
+                      validTo: "2025-12-31"
+                      isExpired: false
+                      isLimitReached: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: |
+        API-Schlüssel für die Authentifizierung. 
+        Kontaktieren Sie fp@auteon.de um einen API-Key zu erhalten.
+
+  schemas:
+    # Metadata Schemas
+    PaginationMetadata:
+      type: object
+      required:
+        - total
+        - returned
+        - offset
+        - limit
+      properties:
+        total:
+          type: integer
+          description: Gesamtanzahl verfügbarer Datensätze (nach Filterung)
+          example: 750
+        returned:
+          type: integer
+          description: Anzahl der in dieser Response zurückgegebenen Datensätze
+          example: 50
+        offset:
+          type: integer
+          description: Anzahl übersprungener Datensätze
+          example: 0
+        limit:
+          type: integer
+          description: Maximale Anzahl angeforderter Datensätze
+          example: 50
+
+    WorkshopFilters:
+      type: object
+      properties:
+        search:
+          type: string
+          nullable: true
+          example: null
+        city:
+          type: string
+          nullable: true
+          example: "Hamburg"
+        zipCode:
+          type: string
+          nullable: true
+          example: null
+        concept:
+          type: string
+          nullable: true
+          example: null
+
+    FoundingManagementFilters:
+      type: object
+      properties:
+        search:
+          type: string
+          nullable: true
+          example: null
+        dateFrom:
+          type: string
+          format: date
+          nullable: true
+          example: "2025-01-01"
+        dateTo:
+          type: string
+          format: date
+          nullable: true
+          example: null
+
+    # Workshop Schemas
+    Relationship:
+      type: object
+      required:
+        - handle
+        - updated_at
+      properties:
+        handle:
+          type: string
+          enum:
+            - AUTOCREW
+            - GOOGLE_BUSINESS
+            - OPENSTREETMAP_NOMINATIM
+          description: Quelle der Beziehungsdaten
+          example: "AUTOCREW"
+        source_data:
+          type: string
+          description: JSON-String mit Quelldaten
+          example: '{"ID":"2987","concept":"AutoCrew (Bosch)"}'
+        updated_at:
+          type: string
+          format: date-time
+          description: Zeitpunkt der letzten Aktualisierung
+          example: "2025-10-09 22:22:24.486274 UTC"
+
+    Workshop:
+      type: object
+      required:
+        - id
+        - name
+        - country_code
+      properties:
+        id:
+          type: string
+          description: Eindeutige ID der Werkstatt
+          example: "GAdLEFUOFV9ITlYJBBhOX0xFTFVDDwQAAgBQVENeThdYWUVc"
+        name:
+          type: string
+          description: Name der Werkstatt
+          example: "Reifen Helm Filiale - Hamburg-Langenhorn"
+        country_code:
+          type: string
+          pattern: '^[A-Z]{2}$'
+          description: ISO 3166-1 Alpha-2 Ländercode
+          example: "DE"
+        city:
+          type: string
+          nullable: true
+          description: Stadt
+          example: "Hamburg"
+        zip_code:
+          type: string
+          nullable: true
+          description: Postleitzahl
+          example: "22419"
+        street:
+          type: string
+          nullable: true
+          description: Straßenname
+          example: "Langenhorner Chaussee"
+        house_number:
+          type: string
+          nullable: true
+          description: Hausnummer
+          example: "475"
+        updated_at:
+          type: string
+          format: date-time
+          description: Zeitpunkt der letzten Aktualisierung
+          example: "2025-10-09 22:22:24.486274 UTC"
+        website_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Website-URL
+          example: "http://www.reifenhelm.de/"
+        operational_status:
+          type: string
+          enum:
+            - OPERATIONAL
+            - CLOSED
+            - TEMPORARILY_CLOSED
+          description: Betriebsstatus
+          example: "OPERATIONAL"
+        working_hours_structured:
+          type: string
+          nullable: true
+          description: JSON-String mit strukturierten Öffnungszeiten
+          example: '{"Montag":"08:00-17:00"}'
+        working_hours_text:
+          type: string
+          nullable: true
+          description: Textuelle Darstellung der Öffnungszeiten
+          example: "Montag:08:00-17:00|Dienstag:08:00-17:00"
+        google_place_id:
+          type: string
+          nullable: true
+          description: Google Places ID
+          example: "ChIJDQpydh2IsUcRqoLXUVoMi5Y"
+        google_business_cid:
+          type: string
+          nullable: true
+          description: Google Business CID
+          example: "10847777709511640000"
+        primary_classification:
+          type: string
+          nullable: true
+          description: Hauptklassifikation der Werkstatt
+          example: "Fleetpartner Reifen Helm"
+        telephone:
+          type: string
+          nullable: true
+          description: Telefonnummer
+          example: "+494052720613"
+        email:
+          type: array
+          items:
+            type: string
+            format: email
+          description: E-Mail-Adressen
+          example: ["arval@reifenhelm.de"]
+        contact_persons:
+          type: array
+          items:
+            type: string
+          description: Kontaktpersonen
+          example: []
+        concepts_networks:
+          type: array
+          items:
+            type: string
+          description: Zugehörige Konzepte und Netzwerke
+          example: ["AutoCrew", "Fleetpartner", "Arval"]
+        relationships:
+          type: array
+          items:
+            $ref: '#/components/schemas/Relationship'
+          description: Beziehungen zu externen Datenquellen
+
+    WorkshopListResponse:
+      type: object
+      required:
+        - metadata
+        - data
+      properties:
+        metadata:
+          allOf:
+            - $ref: '#/components/schemas/PaginationMetadata'
+            - type: object
+              required:
+                - filters
+              properties:
+                filters:
+                  $ref: '#/components/schemas/WorkshopFilters'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Workshop'
+
+    # Founding Schemas
+    Founding:
+      type: object
+      required:
+        - Name
+        - Rechtsform
+        - Land
+      properties:
+        Name:
+          type: string
+          description: Firmenname
+          example: "WM Kraftfahrzeugtechnik GmbH"
+        Rechtsform:
+          type: string
+          description: Rechtsform des Unternehmens
+          example: "GmbH"
+        Land:
+          type: string
+          pattern: '^[A-Z]{2}$'
+          description: ISO 3166-1 Alpha-2 Ländercode
+          example: "DE"
+        PLZ:
+          type: integer
+          nullable: true
+          description: Postleitzahl
+          example: 53359
+        Ort:
+          type: string
+          nullable: true
+          description: Ort
+          example: "Rheinbach"
+        "Straße":
+          type: string
+          nullable: true
+          description: Straße
+          example: "Boschstr. 8"
+        "HR Amtsgericht":
+          type: string
+          nullable: true
+          description: Handelsregister Amtsgericht
+          example: "Bonn"
+        "Register-ID":
+          type: string
+          nullable: true
+          description: Handelsregister-Nummer
+          example: "HRB 29650"
+        Status:
+          type: string
+          enum:
+            - active
+            - inactive
+          description: Unternehmensstatus
+          example: "active"
+        "North Data URL":
+          type: string
+          format: uri
+          nullable: true
+          description: Link zu North Data
+          example: "https://www.northdata.de/..."
+        "Tel.":
+          type: string
+          nullable: true
+          description: Telefonnummer
+          example: null
+        "Fax":
+          type: string
+          nullable: true
+          description: Faxnummer
+          example: null
+        "E-Mail":
+          type: string
+          format: email
+          nullable: true
+          description: E-Mail-Adresse
+          example: null
+        Website:
+          type: string
+          format: uri
+          nullable: true
+          description: Website
+          example: null
+        "USt.-Id.":
+          type: string
+          nullable: true
+          description: Umsatzsteuer-Identifikationsnummer
+          example: null
+        Eintragung:
+          type: string
+          description: Art der Eintragung
+          example: "Eintragung"
+        "Eintragung Datum":
+          type: string
+          format: date
+          description: Datum der Eintragung
+          example: "02.01.2025"
+        "Branche (WZ)":
+          type: string
+          nullable: true
+          description: Branche nach WZ-Klassifikation
+          example: "45.20.3 Instandhaltung und Reparatur von Kraftwagen"
+        "Ges. Vertreter 1":
+          type: string
+          nullable: true
+          description: Geschäftsführer/Vertreter 1
+          example: "Maintke, Stephan"
+        "Ges. Vertreter 2":
+          type: string
+          nullable: true
+          description: Geschäftsführer/Vertreter 2
+          example: null
+        "Ges. Vertreter 3":
+          type: string
+          nullable: true
+          description: Geschäftsführer/Vertreter 3
+          example: null
+        Gegenstand:
+          type: string
+          nullable: true
+          description: Unternehmensgegenstand
+          example: "das Betreiben einer Reparaturwerkstätte"
+        "Stamm-/Grundkapital EUR":
+          type: string
+          nullable: true
+          description: Stamm- oder Grundkapital in EUR
+          example: "25.000"
+        Mitarbeiterzahl:
+          type: integer
+          nullable: true
+          description: Anzahl der Mitarbeiter
+          example: null
+
+    FoundingListResponse:
+      type: object
+      required:
+        - metadata
+        - data
+      properties:
+        metadata:
+          allOf:
+            - $ref: '#/components/schemas/PaginationMetadata'
+            - type: object
+              required:
+                - filters
+              properties:
+                filters:
+                  $ref: '#/components/schemas/FoundingManagementFilters'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Founding'
+
+    # Management Change Schemas
+    ManagementChange:
+      type: object
+      required:
+        - Name
+        - Rechtsform
+        - Land
+      properties:
+        Name:
+          type: string
+          description: Firmenname
+          example: "LKW Service Pötzsch - GmbH"
+        Rechtsform:
+          type: string
+          description: Rechtsform des Unternehmens
+          example: "GmbH"
+        Land:
+          type: string
+          pattern: '^[A-Z]{2}$'
+          description: ISO 3166-1 Alpha-2 Ländercode
+          example: "DE"
+        PLZ:
+          type: integer
+          nullable: true
+          description: Postleitzahl
+          example: 1744
+        Ort:
+          type: string
+          nullable: true
+          description: Ort
+          example: "Dippoldiswalde"
+        "Straße":
+          type: string
+          nullable: true
+          description: Straße
+          example: "Oberhäslicher Str. 7"
+        "HR Amtsgericht":
+          type: string
+          nullable: true
+          description: Handelsregister Amtsgericht
+          example: "Dresden"
+        "Register-ID":
+          type: string
+          nullable: true
+          description: Handelsregister-Nummer
+          example: "HRB 4598"
+        Status:
+          type: string
+          enum:
+            - active
+            - inactive
+          description: Unternehmensstatus
+          example: "active"
+        "North Data URL":
+          type: string
+          format: uri
+          nullable: true
+          description: Link zu North Data
+        "Tel.":
+          type: string
+          nullable: true
+          description: Telefonnummer
+          example: "+49 350464690"
+        "Fax":
+          type: string
+          nullable: true
+          description: Faxnummer
+          example: "+49 3504646919"
+        "E-Mail":
+          type: string
+          format: email
+          nullable: true
+          description: E-Mail-Adresse
+          example: "info@manpoetzsch.de"
+        Website:
+          type: string
+          format: uri
+          nullable: true
+          description: Website
+          example: "https://www.lkw-poetzsch.de"
+        "USt.-Id.":
+          type: string
+          nullable: true
+          description: Umsatzsteuer-Identifikationsnummer
+          example: "DE140461671"
+        Managementwechsel:
+          type: string
+          description: Beschreibung der Management-Änderung
+          example: "Geschäftsführer: Tom Uwe Bormann"
+        "Managementwechsel Datum":
+          type: string
+          format: date
+          description: Datum der Management-Änderung
+          example: "02.01.2025"
+        "Branche (WZ)":
+          type: string
+          nullable: true
+          description: Branche nach WZ-Klassifikation
+          example: "45.20.4 Instandhaltung und Reparatur von Kraftwagen"
+        "Ges. Vertreter 1":
+          type: string
+          nullable: true
+          description: Geschäftsführer/Vertreter 1
+          example: "Bormann, Tom Uwe"
+        "Ges. Vertreter 2":
+          type: string
+          nullable: true
+          description: Geschäftsführer/Vertreter 2
+          example: "Fröhlich, Axel"
+        "Ges. Vertreter 3":
+          type: string
+          nullable: true
+          description: Geschäftsführer/Vertreter 3
+          example: "Fröhlich, Kathrin"
+        Gegenstand:
+          type: string
+          nullable: true
+          description: Unternehmensgegenstand
+        "Finanzkennzahlen Datum":
+          type: string
+          format: date
+          nullable: true
+          description: Datum der Finanzkennzahlen
+          example: "31.12.2024"
+        "Bilanzsumme EUR":
+          type: string
+          nullable: true
+          description: Bilanzsumme in EUR
+          example: "4.713.784,85"
+        "Umsatz EUR":
+          type: string
+          nullable: true
+          description: Umsatz in EUR
+          example: "11.000.000"
+
+    ManagementChangeListResponse:
+      type: object
+      required:
+        - metadata
+        - data
+      properties:
+        metadata:
+          allOf:
+            - $ref: '#/components/schemas/PaginationMetadata'
+            - type: object
+              required:
+                - filters
+              properties:
+                filters:
+                  $ref: '#/components/schemas/FoundingManagementFilters'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagementChange'
+
+    # Usage Schemas
+    UsageStats:
+      type: object
+      required:
+        - current
+        - isExpired
+        - isLimitReached
+      properties:
+        current:
+          type: integer
+          description: Aktuell verbrauchte Datensätze
+          example: 1250
+        limit:
+          type: integer
+          nullable: true
+          description: Maximale Anzahl erlaubter Datensätze (null = unbegrenzt)
+          example: 10000
+        remaining:
+          type: integer
+          nullable: true
+          description: Verbleibende Datensätze (null wenn unbegrenzt)
+          example: 8750
+        validTo:
+          type: string
+          format: date
+          nullable: true
+          description: Ablaufdatum des API-Keys (null = kein Ablauf)
+          example: "2025-12-31"
+        isExpired:
+          type: boolean
+          description: Ob der API-Key abgelaufen ist
+          example: false
+        isLimitReached:
+          type: boolean
+          description: Ob das API-Limit erreicht wurde
+          example: false
+
+    UsageResponse:
+      type: object
+      required:
+        - usage
+      properties:
+        usage:
+          $ref: '#/components/schemas/UsageStats'
+
+    # Error Schemas
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Fehlerbeschreibung
+          example: "Invalid API key"
+        details:
+          type: string
+          description: Zusätzliche Details (nur in Development)
+          example: "Database connection failed"
+
+  responses:
+    Unauthorized:
+      description: Kein API-Key angegeben
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "API key required"
+
+    Forbidden:
+      description: Ungültiger oder abgelaufener API-Key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            invalid:
+              summary: Ungültiger API-Key
+              value:
+                error: "Invalid API key"
+            expired:
+              summary: Abgelaufener API-Key
+              value:
+                error: "API key expired"
+
+    RateLimitExceeded:
+      description: API-Limit wurde erreicht
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "API limit reached"
+
+    InternalServerError:
+      description: Interner Serverfehler
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Internal server error"
+
