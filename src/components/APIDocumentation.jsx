@@ -139,7 +139,7 @@ print(data)`
               className="flex items-center gap-2"
             >
               <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-              {t('common.refresh') || 'Aktualisieren'}
+              {t('common.refresh')}
             </Button>
           </CardTitle>
         </CardHeader>

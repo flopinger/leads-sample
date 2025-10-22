@@ -20,6 +20,7 @@ import werkstattDataRaw from './assets/werkstatt-data.json';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [tenantName, setTenantName] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [apiUsage, setApiUsage] = useState(0);
@@ -179,7 +180,10 @@ function App() {
   const fetchUserData = async () => {
     try {
       const res = await fetch('/api/me', { credentials: 'include' });
-      if (!res.ok) return;
+      if (!res.ok) {
+        setIsCheckingAuth(false);
+        return;
+      }
       
       const data = await res.json();
       if (data && data.user) {
@@ -205,6 +209,8 @@ function App() {
       }
     } catch (error) {
       // Not authenticated
+    } finally {
+      setIsCheckingAuth(false);
     }
   };
 
@@ -248,6 +254,18 @@ function App() {
     try { await fetch('/api/logout', { method: 'POST', credentials: 'include' }); } catch {}
     setIsAuthenticated(false);
   };
+
+  // Show loading state while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          <p className="mt-4 text-gray-600">Lädt...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

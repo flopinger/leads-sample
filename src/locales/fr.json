@@ -12,6 +12,7 @@
     "export": "Exporter",
     "logout": "Déconnexion",
     "login": "Connexion",
+    "refresh": "Actualiser",
     "dataAsOf": "Au",
     "total": "total",
     "back": "Retour",

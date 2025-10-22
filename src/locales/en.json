@@ -12,6 +12,7 @@
     "export": "Export",
     "logout": "Logout",
     "login": "Login",
+    "refresh": "Refresh",
     "dataAsOf": "As of",
     "total": "total",
     "back": "Back",

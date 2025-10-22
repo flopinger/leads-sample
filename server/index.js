@@ -79,6 +79,31 @@ app.get('/api/logo', ensureAuth, (req, res) => {
   res.sendFile(logoPath);
 });
 
+// Serve static files in production
+const distPath = path.resolve(process.cwd(), 'dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
+
+// SPA fallback - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  // Skip API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  
+  // In production, serve the built index.html
+  if (fs.existsSync(distPath)) {
+    const indexPath = path.join(distPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      return res.sendFile(indexPath);
+    }
+  }
+  
+  // In development, let Vite handle it
+  res.status(404).send('Not found - use Vite dev server');
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
