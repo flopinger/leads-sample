@@ -1,7 +1,10 @@
 -- SQL Fix für API Usage Tracking
 -- Die Funktion muss api_key statt username verwenden
 
--- Neue Version der increment_api_usage Funktion
+-- 1. Alte Funktion löschen
+DROP FUNCTION IF EXISTS increment_api_usage(text, bigint);
+
+-- 2. Neue Version der increment_api_usage Funktion erstellen
 CREATE OR REPLACE FUNCTION increment_api_usage(p_api_key text, p_count bigint)
 RETURNS void AS $$
 BEGIN
