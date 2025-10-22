@@ -13,7 +13,8 @@ import {
   TrendingUp, 
   Calendar,
   Shield,
-  Zap
+  Zap,
+  RefreshCw
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -21,6 +22,7 @@ const APIDocumentation = ({ apiKey, apiUsage, apiLimit, apiValidTo }) => {
   const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [usageData, setUsageData] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -36,6 +38,7 @@ const APIDocumentation = ({ apiKey, apiUsage, apiLimit, apiValidTo }) => {
   }, [apiKey]);
 
   const fetchUsage = async () => {
+    setIsRefreshing(true);
     try {
       const res = await fetch('/api/v1/usage', {
         headers: { 'X-API-Key': apiKey }
@@ -46,12 +49,19 @@ const APIDocumentation = ({ apiKey, apiUsage, apiLimit, apiValidTo }) => {
       }
     } catch (error) {
       console.error('Failed to fetch usage:', error);
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
+  // Use fetched data if available, otherwise fall back to props
+  const currentUsage = usageData?.usage?.current ?? apiUsage;
+  const currentLimit = usageData?.usage?.limit ?? apiLimit;
+  const currentValidTo = usageData?.usage?.validTo ?? apiValidTo;
+
   const getUsagePercentage = () => {
-    if (!apiLimit) return 0;
-    return ((apiUsage || 0) / apiLimit) * 100;
+    if (!currentLimit) return 0;
+    return ((currentUsage || 0) / currentLimit) * 100;
   };
 
   const getUsageColor = () => {
@@ -61,8 +71,8 @@ const APIDocumentation = ({ apiKey, apiUsage, apiLimit, apiValidTo }) => {
     return 'text-green-600';
   };
 
-  const isExpired = apiValidTo && new Date(apiValidTo) < new Date();
-  const isLimitReached = apiLimit && (apiUsage || 0) >= apiLimit;
+  const isExpired = currentValidTo && new Date(currentValidTo) < new Date();
+  const isLimitReached = currentLimit && (currentUsage || 0) >= currentLimit;
 
   const codeExamples = {
     curl: {
@@ -116,9 +126,21 @@ print(data)`
       {/* API Key und Status */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <Key className="h-5 w-5 mr-2" />
-            {t('api.apiKeyStatus')}
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Key className="h-5 w-5 mr-2" />
+              {t('api.apiKeyStatus')}
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={fetchUsage}
+              disabled={isRefreshing}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {t('common.refresh') || 'Aktualisieren'}
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -155,7 +177,7 @@ print(data)`
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                Ihr API-Zugang ist am {new Date(apiValidTo).toLocaleDateString('de-DE')} abgelaufen.
+                Ihr API-Zugang ist am {new Date(currentValidTo).toLocaleDateString('de-DE')} abgelaufen.
               </AlertDescription>
             </Alert>
           )}
@@ -177,14 +199,14 @@ print(data)`
                 <TrendingUp className="h-4 w-4 text-gray-400" />
               </div>
               <p className={`text-2xl font-bold ${getUsageColor()}`}>
-                {(apiUsage || 0).toLocaleString()}
-                {apiLimit && (
+                {(currentUsage || 0).toLocaleString()}
+                {currentLimit && (
                   <span className="text-sm text-gray-500 font-normal ml-2">
-                    / {apiLimit.toLocaleString()}
+                    / {currentLimit.toLocaleString()}
                   </span>
                 )}
               </p>
-              {apiLimit && (
+              {currentLimit && (
                 <div className="mt-2 bg-gray-200 rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all ${
@@ -204,7 +226,7 @@ print(data)`
                 <Shield className="h-4 w-4 text-gray-400" />
               </div>
               <p className="text-2xl font-bold text-gray-900">
-                {apiLimit ? apiLimit.toLocaleString() : t('api.unlimited')}
+                {currentLimit ? currentLimit.toLocaleString() : t('api.unlimited')}
               </p>
               <p className="text-sm text-gray-500 mt-1">
                 {t('api.datasets')}
@@ -217,11 +239,11 @@ print(data)`
                 <Calendar className="h-4 w-4 text-gray-400" />
               </div>
               <p className="text-2xl font-bold text-gray-900">
-                {apiValidTo ? new Date(apiValidTo).toLocaleDateString('de-DE') : t('api.unlimited')}
+                {currentValidTo ? new Date(currentValidTo).toLocaleDateString('de-DE') : t('api.unlimited')}
               </p>
-              {apiValidTo && (
+              {currentValidTo && (
                 <p className="text-sm text-gray-500 mt-1">
-                  {Math.ceil((new Date(apiValidTo) - new Date()) / (1000 * 60 * 60 * 24))} {t('common.days')}
+                  {Math.ceil((new Date(currentValidTo) - new Date()) / (1000 * 60 * 60 * 24))} {t('common.days')}
                 </p>
               )}
             </div>
@@ -273,9 +295,9 @@ print(data)`
                 <div className="mt-6">
                   <h4 className="text-lg font-semibold mb-2">{t('api.rateLimits')}</h4>
                   <ul className="space-y-2">
-                    <li>{t('api.yourLimit')}: <strong>{apiLimit ? apiLimit.toLocaleString() : t('api.unlimited')}</strong> {t('api.datasets')}</li>
-                    <li>{t('api.alreadyUsed')}: <strong>{(apiUsage || 0).toLocaleString()}</strong> {t('api.datasets')}</li>
-                    <li>{t('api.remainingDatasets')}: <strong>{apiLimit ? (apiLimit - (apiUsage || 0)).toLocaleString() : t('api.unlimited')}</strong> {t('api.datasets')}</li>
+                    <li>{t('api.yourLimit')}: <strong>{currentLimit ? currentLimit.toLocaleString() : t('api.unlimited')}</strong> {t('api.datasets')}</li>
+                    <li>{t('api.alreadyUsed')}: <strong>{(currentUsage || 0).toLocaleString()}</strong> {t('api.datasets')}</li>
+                    <li>{t('api.remainingDatasets')}: <strong>{currentLimit ? (currentLimit - (currentUsage || 0)).toLocaleString() : t('api.unlimited')}</strong> {t('api.datasets')}</li>
                   </ul>
                 </div>
 
